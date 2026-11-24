@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.sp
 private val SpaceBackground = Color(0xFF0B102B)
 private val SpacePurple = Color(0xFF7257E8)
 private val SpaceBlue = Color(0xFF263C78)
-private val SpaceCard = Color(0xFF192348)
-private val SpaceWhite = Color(0xFFF5F3FF)
+val SpaceCard = Color(0xFF192348)
+val SpaceWhite = Color(0xFFF5F3FF)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -244,27 +244,11 @@ fun DashboardScreen(
                 }
             }
 
-            item {
-                SectionTitle("Space Gallery", "Discover amazing views")
-                Spacer(Modifier.height(12.dp))
 
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    GalleryCard(
-                        title = "Nebula",
-                        emoji = "🌌",
-                        color = Color(0xFF6545A8),
-                        modifier = Modifier.weight(1f)
-                    )
-                    GalleryCard(
-                        title = "Galaxy",
-                        emoji = "🌠",
-                        color = Color(0xFF245B91),
-                        modifier = Modifier.weight(1f)
-                    )
-                }
+            item {
+                NasaGallery()
             }
+
 
             item {
                 Text(
@@ -352,14 +336,18 @@ fun PlanetCard(
 ) {
     Card(
         onClick = onClick,
-        modifier = Modifier.width(145.dp),
+        modifier = Modifier
+            .width(145.dp)
+            .height(190.dp),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
             containerColor = SpaceCard
         )
     ) {
         Column(
-            modifier = Modifier.padding(14.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(14.dp)
         ) {
             Box(
                 modifier = Modifier
