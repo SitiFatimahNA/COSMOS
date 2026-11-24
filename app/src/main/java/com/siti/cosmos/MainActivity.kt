@@ -106,9 +106,11 @@ fun CosmosApp() {
                                 selectedPlanet = planet
                             }
                         )
-                        1 -> SimplePage(
-                            "Explore",
-                            "Discover the planets and universe!"
+                        1 -> ExploreScreen(
+                            planets = planets,
+                            onPlanetClick = { planet ->
+                                selectedPlanet = planet
+                            }
                         )
                         else -> SimplePage(
                             "Settings",
@@ -121,6 +123,64 @@ fun CosmosApp() {
     }
 }
 
+val planets = listOf(
+    Planet(
+        "Mercury", "🌑", "The smallest planet",
+        Color(0xFF777C91),
+        "57.9 million km", "4,879 km",
+        "58.6 Earth days", "88 Earth days",
+        "Mercury is the closest planet to the Sun."
+    ),
+    Planet(
+        "Venus", "🟠", "The hottest planet",
+        Color(0xFFD58B55),
+        "108.2 million km", "12,104 km",
+        "243 Earth days", "225 Earth days",
+        "Venus has an extremely hot atmosphere."
+    ),
+    Planet(
+        "Earth", "🌍", "Our home planet",
+        Color(0xFF348FE0),
+        "149.6 million km", "12,742 km",
+        "24 hours", "365.25 days",
+        "Earth is the only planet known to support life."
+    ),
+    Planet(
+        "Mars", "🔴", "The red planet",
+        Color(0xFFD65B50),
+        "227.9 million km", "6,779 km",
+        "24.6 hours", "687 Earth days",
+        "Mars has the largest volcano in the Solar System."
+    ),
+    Planet(
+        "Jupiter", "🪐", "The gas giant",
+        Color(0xFFC58A64),
+        "778.6 million km", "139,820 km",
+        "9.9 hours", "11.86 Earth years",
+        "Jupiter is the largest planet in our Solar System."
+    ),
+    Planet(
+        "Saturn", "🪐", "The ringed planet",
+        Color(0xFFD9B56D),
+        "1.43 billion km", "116,460 km",
+        "10.7 hours", "29.4 Earth years",
+        "Saturn is famous for its spectacular rings."
+    ),
+    Planet(
+        "Uranus", "🔵", "The ice giant",
+        Color(0xFF65C9D6),
+        "2.87 billion km", "50,724 km",
+        "17.2 hours", "84 Earth years",
+        "Uranus rotates on its side."
+    ),
+    Planet(
+        "Neptune", "🔵", "The distant planet",
+        Color(0xFF4668DB),
+        "4.50 billion km", "49,244 km",
+        "16.1 hours", "165 Earth years",
+        "Neptune has extremely powerful winds."
+    )
+)
 @Composable
 fun DashboardScreen(
     onPlanetClick: (Planet) -> Unit
@@ -170,64 +230,7 @@ fun DashboardScreen(
                 Spacer(Modifier.height(12.dp))
 
 
-                val planets = listOf(
-                    Planet(
-                        "Mercury", "🌑", "The smallest planet",
-                        Color(0xFF777C91),
-                        "57.9 million km", "4,879 km",
-                        "58.6 Earth days", "88 Earth days",
-                        "Mercury is the closest planet to the Sun."
-                    ),
-                    Planet(
-                        "Venus", "🟠", "The hottest planet",
-                        Color(0xFFD58B55),
-                        "108.2 million km", "12,104 km",
-                        "243 Earth days", "225 Earth days",
-                        "Venus has an extremely hot atmosphere."
-                    ),
-                    Planet(
-                        "Earth", "🌍", "Our home planet",
-                        Color(0xFF348FE0),
-                        "149.6 million km", "12,742 km",
-                        "24 hours", "365.25 days",
-                        "Earth is the only planet known to support life."
-                    ),
-                    Planet(
-                        "Mars", "🔴", "The red planet",
-                        Color(0xFFD65B50),
-                        "227.9 million km", "6,779 km",
-                        "24.6 hours", "687 Earth days",
-                        "Mars has the largest volcano in the Solar System."
-                    ),
-                    Planet(
-                        "Jupiter", "🪐", "The gas giant",
-                        Color(0xFFC58A64),
-                        "778.6 million km", "139,820 km",
-                        "9.9 hours", "11.86 Earth years",
-                        "Jupiter is the largest planet in our Solar System."
-                    ),
-                    Planet(
-                        "Saturn", "🪐", "The ringed planet",
-                        Color(0xFFD9B56D),
-                        "1.43 billion km", "116,460 km",
-                        "10.7 hours", "29.4 Earth years",
-                        "Saturn is famous for its spectacular rings."
-                    ),
-                    Planet(
-                        "Uranus", "🔵", "The ice giant",
-                        Color(0xFF65C9D6),
-                        "2.87 billion km", "50,724 km",
-                        "17.2 hours", "84 Earth years",
-                        "Uranus rotates on its side."
-                    ),
-                    Planet(
-                        "Neptune", "🔵", "The distant planet",
-                        Color(0xFF4668DB),
-                        "4.50 billion km", "49,244 km",
-                        "16.1 hours", "165 Earth years",
-                        "Neptune has extremely powerful winds."
-                    )
-                )
+
 
 
                 LazyRow(
