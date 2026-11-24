@@ -14,8 +14,12 @@ import androidx.compose.ui.graphics.Color
 @Composable
 fun ExploreScreen(
     planets: List<Planet>,
+    darkTheme: Boolean,
     onPlanetClick: (Planet) -> Unit
 ) {
+    val textColor = if (darkTheme) DarkWhite else SpaceWhite
+    val cardTextColor = if (darkTheme) DarkWhite else SpaceWhite
+    val emptyTextColor = if (darkTheme) Color.LightGray else Color.DarkGray
     var searchQuery by remember {
         mutableStateOf("")
     }
@@ -31,7 +35,7 @@ fun ExploreScreen(
     ) {
         Text(
             text = "Explore Universe",
-            color = SpaceWhite,
+            color = textColor,
             style = MaterialTheme.typography.headlineMedium
         )
 
@@ -52,7 +56,7 @@ fun ExploreScreen(
         if (filteredPlanets.isEmpty()) {
             Text(
                 text = "No planets found.",
-                color = Color.LightGray
+                color = emptyTextColor
             )
         } else {
             LazyVerticalGrid(
@@ -65,6 +69,7 @@ fun ExploreScreen(
                 items(filteredPlanets) { planet ->
                     PlanetCard(
                         planet = planet,
+                        darkTheme = darkTheme,
                         onClick = {
                             onPlanetClick(planet)
                         }

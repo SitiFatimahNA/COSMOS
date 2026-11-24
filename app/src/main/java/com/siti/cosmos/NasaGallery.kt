@@ -28,7 +28,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 
 @Composable
-fun NasaGallery() {
+fun NasaGallery(darkTheme: Boolean) {
+    val galleryCardColor = if (darkTheme) {
+        DarkCard
+    } else {
+        SpaceCard
+    }
+
+    val galleryTextColor = if (darkTheme) {
+        DarkWhite
+    } else {
+        SpaceWhite
+    }
 
     var images by remember {
         mutableStateOf<List<NasaItem>>(emptyList())
@@ -60,7 +71,7 @@ fun NasaGallery() {
 
         Text(
             text = "NASA Space Gallery",
-            color = SpaceWhite,
+            color = galleryTextColor,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold
         )
@@ -84,7 +95,7 @@ fun NasaGallery() {
                 Text(
                     text = "Belum ada gambar tersedia.",
                     modifier = Modifier.padding(12.dp),
-                    color = Color.White
+                    color = galleryTextColor
                 )
             }
 
@@ -108,7 +119,7 @@ fun NasaGallery() {
                                 .height(220.dp),
                             shape = RoundedCornerShape(20.dp),
                             colors = CardDefaults.cardColors(
-                                containerColor = SpaceCard
+                                containerColor = galleryCardColor
                             )
                         ) {
                             Column {
@@ -125,7 +136,7 @@ fun NasaGallery() {
                                     text = title,
                                     modifier = Modifier.padding(8.dp),
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = SpaceWhite,
+                                    color = galleryTextColor,
                                     fontWeight = FontWeight.Bold,
                                     maxLines = 2
                                 )

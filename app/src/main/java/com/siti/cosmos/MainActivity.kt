@@ -1,6 +1,6 @@
 package com.siti.cosmos
 
-
+import com.siti.cosmos.ui.theme.COSMOSTheme
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,18 +19,39 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.isSystemInDarkTheme
 
-private val SpaceBackground = Color(0xFF0B102B)
-private val SpacePurple = Color(0xFF7257E8)
-private val SpaceBlue = Color(0xFF263C78)
-val SpaceCard = Color(0xFF192348)
-val SpaceWhite = Color(0xFFF5F3FF)
+
+val SpaceBackground = Color(0xFFF5F6FA)
+val SpacePurple = Color(0xFF7257E8)
+val SpaceBlue = Color(0xFFE8E5FF)
+val SpaceCard = Color(0xFFFFFFFF)
+val SpaceWhite = Color(0xFF20243A)
+
+val DarkBackground = Color(0xFF0B102B)
+val DarkCard = Color(0xFF192348)
+val DarkWhite = Color(0xFFF5F3FF)
+val DarkBlue = Color(0xFF263C78)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            CosmosApp()
+            val systemDarkTheme = isSystemInDarkTheme()
+
+            var darkTheme by remember {
+                mutableStateOf(systemDarkTheme)
+            }
+
+            COSMOSTheme(
+                darkTheme = darkTheme,
+                dynamicColor = false
+            ) {
+                CosmosApp(
+                    darkTheme = darkTheme,
+                    onThemeChange = { darkTheme = it }
+                )
+            }
         }
     }
 }
@@ -50,19 +71,45 @@ data class Planet(
 
 
 @Composable
-fun CosmosApp() {
+fun CosmosApp(
+    darkTheme: Boolean,
+    onThemeChange: (Boolean) -> Unit
+) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     var selectedPlanet by remember {
         mutableStateOf<Planet?>(null)
     }
+    val backgroundColor = if (darkTheme) {
+        DarkBackground
+    } else {
+        SpaceBackground
+    }
 
-    MaterialTheme {
-        Scaffold(
-            containerColor = SpaceBackground,
-            bottomBar = {
-                NavigationBar(
-                    containerColor = Color(0xFF141B3A)
-                ) {
+    val cardColor = if (darkTheme) {
+        DarkCard
+    } else {
+        SpaceCard
+    }
+
+    val textColor = if (darkTheme) {
+        DarkWhite
+    } else {
+        SpaceWhite
+    }
+
+    val blueColor = if (darkTheme) {
+        DarkBlue
+    } else {
+        SpaceBlue
+    }
+
+
+    Scaffold(
+        containerColor = backgroundColor,
+        bottomBar = {
+            NavigationBar(
+                containerColor = cardColor
+            ) {
                     val tabs = listOf(
                         "Home" to "⌂",
                         "Explore" to "◎",
@@ -78,11 +125,11 @@ fun CosmosApp() {
                             },
                             label = { Text(tab.first) },
                             colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = Color.White,
-                                selectedTextColor = Color(0xFFB9A8FF),
-                                indicatorColor = SpacePurple,
-                                unselectedIconColor = Color.LightGray,
-                                unselectedTextColor = Color.LightGray
+                                selectedIconColor = if (darkTheme) Color.White else SpacePurple,
+                                selectedTextColor = SpacePurple,
+                                indicatorColor = if (darkTheme) DarkBlue else SpaceBlue,
+                                unselectedIconColor = if (darkTheme) Color.LightGray else Color.Gray,
+                                unselectedTextColor = if (darkTheme) Color.LightGray else Color.Gray
                             )
                         )
                     }
@@ -97,30 +144,33 @@ fun CosmosApp() {
                 if (selectedPlanet != null) {
                     PlanetDetailScreen(
                         planet = selectedPlanet!!,
+                        darkTheme = darkTheme,
                         onBack = { selectedPlanet = null }
                     )
                 } else {
                     when (selectedTab) {
                         0 -> DashboardScreen(
+                            darkTheme = darkTheme,
                             onPlanetClick = { planet ->
                                 selectedPlanet = planet
                             }
                         )
                         1 -> ExploreScreen(
                             planets = planets,
+                            darkTheme = darkTheme,
                             onPlanetClick = { planet ->
                                 selectedPlanet = planet
                             }
                         )
-                        else -> SimplePage(
-                            "Settings",
-                            "App settings will appear here."
+                        else -> SettingsScreen(
+                            darkTheme = darkTheme,
+                            onThemeChange = onThemeChange
                         )
                     }
                 }
             }
         }
-    }
+
 }
 
 val planets = listOf(
@@ -183,8 +233,11 @@ val planets = listOf(
 )
 @Composable
 fun DashboardScreen(
+    darkTheme: Boolean,
     onPlanetClick: (Planet) -> Unit
 ) {
+    val textColor = if (darkTheme) DarkWhite else SpaceWhite
+    val subtitleColor = if (darkTheme) Color.LightGray else Color.DarkGray
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -209,13 +262,13 @@ fun DashboardScreen(
                     Spacer(Modifier.height(8.dp))
                     Text(
                         text = "Explore the Universe",
-                        color = SpaceWhite,
+                        color = textColor,
                         fontSize = if (isLandscape) 30.sp else 26.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         text = "Your journey through space starts here.",
-                        color = Color.LightGray,
+                        color = subtitleColor,
                         fontSize = 14.sp
                     )
                 }
@@ -239,6 +292,7 @@ fun DashboardScreen(
                     items(planets) { planet ->
                         PlanetCard(
                             planet = planet,
+                            darkTheme = darkTheme,
                             onClick = {
                                 onPlanetClick(planet)
                             }
@@ -249,14 +303,14 @@ fun DashboardScreen(
 
 
             item {
-                NasaGallery()
+                NasaGallery(darkTheme = darkTheme)
             }
 
 
             item {
                 Text(
                     text = "Made for curious explorers ✦",
-                    color = Color.Gray,
+                    color = subtitleColor,
                     fontSize = 12.sp,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -335,8 +389,12 @@ fun SectionTitle(title: String, subtitle: String) {
 @Composable
 fun PlanetCard(
     planet: Planet,
+    darkTheme: Boolean = false,
     onClick: () -> Unit
 ) {
+    val cardColor = if (darkTheme) DarkCard else SpaceCard
+    val textColor = if (darkTheme) DarkWhite else SpaceWhite
+    val descriptionColor = if (darkTheme) Color.LightGray else Color.DarkGray
     Card(
         onClick = onClick,
         modifier = Modifier
@@ -344,7 +402,7 @@ fun PlanetCard(
             .height(190.dp),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = SpaceCard
+            containerColor = cardColor
         )
     ) {
         Column(
@@ -372,7 +430,7 @@ fun PlanetCard(
 
             Text(
                 text = planet.name,
-                color = SpaceWhite,
+                color = textColor,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
             )
@@ -381,7 +439,7 @@ fun PlanetCard(
 
             Text(
                 text = planet.description,
-                color = Color.LightGray,
+                color = descriptionColor,
                 fontSize = 11.sp
             )
         }
@@ -448,12 +506,17 @@ fun SimplePage(title: String, description: String) {
 @Composable
 fun PlanetDetailScreen(
     planet: Planet,
+    darkTheme: Boolean,
     onBack: () -> Unit
 ) {
+    val backgroundColor = if (darkTheme) DarkBackground else SpaceBackground
+    val textColor = if (darkTheme) DarkWhite else SpaceWhite
+    val descriptionColor = if (darkTheme) Color.LightGray else Color.DarkGray
+    val infoCardColor = if (darkTheme) DarkCard else SpaceCard
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(SpaceBackground),
+            .background(backgroundColor),
         contentPadding = PaddingValues(20.dp),
         verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
@@ -492,13 +555,13 @@ fun PlanetDetailScreen(
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
                     text = planet.name,
-                    color = SpaceWhite,
+                    color = textColor,
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = planet.description,
-                    color = Color.LightGray,
+                    color = descriptionColor,
                     fontSize = 16.sp
                 )
             }
@@ -507,7 +570,7 @@ fun PlanetDetailScreen(
         item {
             Text(
                 text = "Planet Information",
-                color = SpaceWhite,
+                color = textColor,
                 fontSize = 21.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -515,10 +578,10 @@ fun PlanetDetailScreen(
 
         item {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                InfoCard("Distance from Sun", planet.distance)
-                InfoCard("Diameter", planet.diameter)
-                InfoCard("Rotation", planet.rotation)
-                InfoCard("Revolution", planet.revolution)
+                InfoCard("Distance from Sun", planet.distance, darkTheme)
+                InfoCard("Diameter", planet.diameter, darkTheme)
+                InfoCard("Rotation", planet.rotation, darkTheme)
+                InfoCard("Revolution", planet.revolution, darkTheme)
             }
         }
 
@@ -526,7 +589,7 @@ fun PlanetDetailScreen(
             Card(
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = SpacePurple
+                    containerColor = if (darkTheme) SpacePurple else SpacePurple
                 )
             ) {
                 Column(Modifier.padding(18.dp)) {
@@ -551,27 +614,69 @@ fun PlanetDetailScreen(
 @Composable
 fun InfoCard(
     title: String,
-    value: String
+    value: String,
+    darkTheme: Boolean
 ) {
+    val cardColor = if (darkTheme) DarkCard else SpaceCard
+    val titleColor = if (darkTheme) Color.LightGray else Color.DarkGray
+    val valueColor = if (darkTheme) DarkWhite else SpaceWhite
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = SpaceCard
+            containerColor = cardColor
         )
     ) {
         Column(Modifier.padding(16.dp)) {
             Text(
                 text = title,
-                color = Color.LightGray,
+                color = titleColor,
                 fontSize = 13.sp
             )
             Spacer(Modifier.height(5.dp))
             Text(
                 text = value,
-                color = SpaceWhite,
+                color = valueColor,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+@Composable
+fun SettingsScreen(
+    darkTheme: Boolean,
+    onThemeChange: (Boolean) -> Unit
+) {
+    val textColor = if (darkTheme) DarkWhite else SpaceWhite
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp)
+    ) {
+        Text(
+            text = "Settings",
+            color = textColor,
+            fontSize = 26.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Dark Mode",
+                color = textColor,
+                modifier = Modifier.weight(1f)
+            )
+
+            Switch(
+                checked = darkTheme,
+                onCheckedChange = onThemeChange
             )
         }
     }
