@@ -145,13 +145,15 @@ private fun GalleryContent(images: List<NasaItem>) {
             val imageUrl = item.links.firstOrNull()?.href
             val title    = item.data.firstOrNull()?.title ?: "Space Image"
             val date     = item.data.firstOrNull()?.date_created?.take(10) ?: ""
-            GalleryCard(imageUrl = imageUrl, title = title, date = date)
+            val nasaId   = item.data.firstOrNull()?.nasa_id ?: ""
+            GalleryCard(imageUrl = imageUrl, title = title, date = date, nasaId = nasaId)
         }
     }
 }
 
 @Composable
-private fun GalleryCard(imageUrl: String?, title: String, date: String) {
+private fun GalleryCard(imageUrl: String?, title: String, date: String, nasaId: String) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .width(220.dp)
@@ -160,9 +162,16 @@ private fun GalleryCard(imageUrl: String?, title: String, date: String) {
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication        = null,
-                onClick           = {}      // future: open detail
-            )
+                indication        = null
+            ) {
+                // Open NASA image detail page in browser if nasaId is available
+                if (nasaId.isNotBlank()) {
+                    val uri = android.net.Uri.parse(
+                        "https://images.nasa.gov/details-$nasaId"
+                    )
+                    context.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW, uri))
+                }
+            }
     ) {
         // Image
         AsyncImage(

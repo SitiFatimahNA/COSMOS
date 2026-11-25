@@ -42,6 +42,8 @@ android {
         }
     }
     compileOptions {
+        // Enable desugaring for java.time.* on API < 26
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
@@ -106,6 +108,8 @@ dependencies {
     ksp("androidx.room:room-compiler:$roomVersion")
 
     testImplementation(libs.junit)
+    // Core library desugaring — enables java.time.* on API < 26
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

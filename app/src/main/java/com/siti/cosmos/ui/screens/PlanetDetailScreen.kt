@@ -24,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.siti.cosmos.Planet3D
 import com.siti.cosmos.R
 import com.siti.cosmos.planetColors
@@ -139,7 +140,7 @@ fun PlanetDetailScreen(
                     text   = planet.description,
                     style  = MaterialTheme.typography.bodyMedium,
                     color  = MaterialTheme.colorScheme.onSurfaceVariant,
-                    lineHeight = 24.dp.value.sp,
+                    lineHeight = 24.sp,
                     modifier   = Modifier.padding(
                         horizontal = Dimens.screenPadding,
                         vertical   = Dimens.spaceSm
@@ -318,11 +319,10 @@ private fun FunFactCard(fact: String, accent: Color, modifier: Modifier = Modifi
                 text      = fact,
                 style     = MaterialTheme.typography.bodyMedium,
                 color     = MaterialTheme.colorScheme.onSurfaceVariant,
-                lineHeight = 22.dp.value.sp
+                lineHeight = 22.sp
             )
         }
     }
 }
 
-// Keep sp extension accessible
-private val Float.sp get() = androidx.compose.ui.unit.TextUnit(this, androidx.compose.ui.unit.TextUnitType.Sp)
+// Keep sp extension accessible removed — using standard import instead
