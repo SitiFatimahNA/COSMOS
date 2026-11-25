@@ -2,12 +2,50 @@
 <resources>
     <string name="app_name">COSMOS</string>
 
-    <!-- Navigation -->
+    <!-- Navigation labels -->
     <string name="nav_home">Home</string>
     <string name="nav_apod">Astronomy Picture</string>
     <string name="nav_mars">Mars Exploration</string>
     <string name="nav_neo">Near Earth Objects</string>
     <string name="nav_favs">Favorites</string>
+    <string name="nav_planets">Planets</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Bottom nav short labels -->
+    <string name="nav_label_home">Home</string>
+    <string name="nav_label_apod">APOD</string>
+    <string name="nav_label_mars">Mars</string>
+    <string name="nav_label_neo">NEO</string>
+    <string name="nav_label_favs">Saved</string>
+
+    <!-- Common actions -->
+    <string name="action_back">Back</string>
+    <string name="action_retry">Retry</string>
+    <string name="action_see_all">See All</string>
+    <string name="action_explore">Explore</string>
+    <string name="action_read_more">Read More</string>
+    <string name="action_show_less">Show Less</string>
+    <string name="action_load_more">Load More</string>
+    <string name="action_clear">Clear</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_selected">Selected</string>
+
+    <!-- Status labels -->
+    <string name="label_cached">Cached</string>
+    <string name="label_nasa_apod">NASA APOD</string>
+    <string name="label_video">VIDEO</string>
+    <string name="label_active">Active</string>
+    <string name="label_mission_complete">Mission complete</string>
+
+    <!-- Favorites section headers -->
+    <string name="fav_section_apod">Astronomy Picture</string>
+    <string name="fav_section_mars">Mars Exploration</string>
+    <string name="fav_section_neo">Near Earth Objects</string>
+
+    <!-- Favorite type labels -->
+    <string name="fav_type_apod">APOD</string>
+    <string name="fav_type_mars">MARS</string>
+    <string name="fav_type_neo">NEO</string>
 
     <!-- Home -->
     <string name="explore_universe">Explore the Universe</string>
@@ -27,7 +65,7 @@
 
     <!-- Mars -->
     <string name="mars_empty">No photos available for this date. Try another date.</string>
-    <string name="load_more">Load More</string>
+    <string name="load_more">@string/action_load_more</string>
 
     <!-- NEO -->
     <string name="neo_empty">No objects detected in this time range.</string>
@@ -40,7 +78,7 @@
     <string name="neo_hazardous_section">%1$d Potentially Hazardous</string>
     <string name="neo_safe_section">%1$d Non-Hazardous</string>
     <string name="neo_stat_hazardous">Potentially\nHazardous</string>
-    <string name="neo_stat_safe">Non-Hazardous</string>
+    <string name="neo_stat_safe">Safe</string>
 
     <!-- Favorites -->
     <string name="favorites_empty">No favorites yet.\nAdd some from APOD or Mars.</string>
@@ -60,12 +98,12 @@
 
     <!-- Common -->
     <string name="back_to_explore">← Back</string>
-    <string name="retry">Retry</string>
+    <string name="retry">@string/action_retry</string>
     <string name="loading">Loading…</string>
-    <string name="see_all">See All</string>
-    <string name="explore_btn">Explore</string>
-    <string name="read_more">Read More</string>
-    <string name="show_less">Show Less</string>
+    <string name="see_all">@string/action_see_all</string>
+    <string name="explore_btn">@string/action_explore</string>
+    <string name="read_more">@string/action_read_more</string>
+    <string name="show_less">@string/action_show_less</string>
     <string name="error_no_internet">No internet connection.</string>
     <string name="error_timeout">Connection timed out. Check your internet.</string>
 
@@ -75,21 +113,20 @@
     <string name="neo_category_sub">Near-Earth Asteroids</string>
     <string name="favs_category_sub">Saved Collection</string>
 
-    <!-- Legacy planet strings -->
-    <string name="explore">Explore</string>
-    <string name="home">Home</string>
-    <string name="dark_mode">Dark Mode</string>
-    <string name="special_discovery">SPECIAL DISCOVERY</string>
-    <string name="beyond_stars">Beyond the Stars</string>
-    <string name="hero_description">Explore the mysteries of our universe.</string>
+    <!-- NASA Gallery -->
     <string name="nasa_gallery">NASA Space Gallery</string>
     <string name="nasa_gallery_sub">Featured images from NASA archives</string>
     <string name="loading_gallery">Loading space gallery…</string>
     <string name="gallery_unavailable">Gallery unavailable.</string>
     <string name="gallery_empty">No images available yet.</string>
     <string name="gallery_error">Failed to load NASA images.</string>
+
+    <!-- Search -->
     <string name="search_planets">Search planets…</string>
     <string name="no_planets_found">No planets found.</string>
+
+    <!-- Planet Detail -->
+    <string name="back_to_explore_label">← Back</string>
     <string name="planet_information">Planet Information</string>
     <string name="distance_from_sun">Distance from Sun</string>
     <string name="diameter">Diameter</string>
@@ -97,6 +134,8 @@
     <string name="revolution">Revolution</string>
     <string name="did_you_know">✦ Did You Know?</string>
     <string name="planet_3d_hint">Drag planet to rotate the light</string>
+
+    <!-- Legacy planet names -->
     <string name="mercury_name">Mercury</string>
     <string name="venus_name">Venus</string>
     <string name="earth_name">Earth</string>
@@ -126,4 +165,12 @@
     <string name="earth_years">Earth years</string>
     <string name="hours">hours</string>
     <string name="days">days</string>
+
+    <!-- Misc -->
+    <string name="explore">Explore</string>
+    <string name="home">Home</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="special_discovery">SPECIAL DISCOVERY</string>
+    <string name="beyond_stars">Beyond the Stars</string>
+    <string name="hero_description">Explore the mysteries of our universe.</string>
 </resources>
