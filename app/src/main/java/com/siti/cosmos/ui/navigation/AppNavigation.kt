@@ -30,6 +30,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.siti.cosmos.R
+import com.siti.cosmos.R
 import com.siti.cosmos.ui.screens.*
 import com.siti.cosmos.ui.theme.*
 import com.siti.cosmos.ui.viewmodel.FavoritesViewModel
@@ -40,15 +42,15 @@ private data class BottomTab(
     val route: String,
     val iconOutlined: ImageVector,
     val iconFilled: ImageVector,
-    val labelRes: String
+    val labelRes: Int          // string resource ID — resolved at composable time
 )
 
 private val bottomTabs = listOf(
-    BottomTab(NavRoutes.HOME,      Icons.Outlined.Home,            Icons.Filled.Home,            "Home"),
-    BottomTab(NavRoutes.APOD,      Icons.Outlined.PhotoCamera,     Icons.Outlined.PhotoCamera,   "APOD"),
-    BottomTab(NavRoutes.MARS,      Icons.Outlined.Explore,         Icons.Outlined.Explore,       "Mars"),
-    BottomTab(NavRoutes.NEO,       Icons.Outlined.Stars,           Icons.Outlined.Stars,         "NEO"),
-    BottomTab(NavRoutes.FAVORITES, Icons.Outlined.FavoriteBorder,  Icons.Filled.Favorite,        "Saved"),
+    BottomTab(NavRoutes.HOME,      Icons.Outlined.Home,            Icons.Filled.Home,            R.string.nav_label_home),
+    BottomTab(NavRoutes.APOD,      Icons.Outlined.PhotoCamera,     Icons.Outlined.PhotoCamera,   R.string.nav_label_apod),
+    BottomTab(NavRoutes.MARS,      Icons.Outlined.Explore,         Icons.Outlined.Explore,       R.string.nav_label_mars),
+    BottomTab(NavRoutes.NEO,       Icons.Outlined.Stars,           Icons.Outlined.Stars,         R.string.nav_label_neo),
+    BottomTab(NavRoutes.FAVORITES, Icons.Outlined.FavoriteBorder,  Icons.Filled.Favorite,        R.string.nav_label_favs),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -205,6 +207,7 @@ private fun CosmosNavItem(
     val iconColor     = if (selected) activeColor else inactiveColor
     val icon          = if (selected) tab.iconFilled else tab.iconOutlined
     val indicatorBg   = MaterialTheme.colorScheme.primaryContainer
+    val label         = androidx.compose.ui.res.stringResource(tab.labelRes)
 
     Column(
         modifier = modifier
@@ -229,14 +232,14 @@ private fun CosmosNavItem(
         ) {
             Icon(
                 imageVector        = icon,
-                contentDescription = tab.labelRes,
+                contentDescription = label,
                 tint               = iconColor,
                 modifier           = Modifier.size(Dimens.iconMd)
             )
         }
         Spacer(Modifier.height(Dimens.spaceXxs))
         Text(
-            text       = tab.labelRes,
+            text       = label,
             fontSize   = 10.sp,
             fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
             color      = iconColor,
