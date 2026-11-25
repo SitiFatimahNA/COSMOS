@@ -1,70 +1,86 @@
-
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">COSMOS</string>
 
-    <!-- Dashboard -->
-    <string name="cosmos_title">COSMOS ✦</string>
+    <!-- Navigation -->
+    <string name="nav_home">Beranda</string>
+    <string name="nav_apod">Foto Astronomi Harian</string>
+    <string name="nav_mars">Eksplorasi Mars</string>
+    <string name="nav_neo">Objek Dekat Bumi</string>
+    <string name="nav_favs">Favorit</string>
+
+    <!-- Home -->
     <string name="explore_universe">Jelajahi Alam Semesta</string>
     <string name="journey_subtitle">Perjalananmu menjelajahi luar angkasa dimulai di sini.</string>
+    <string name="explore_section">Kategori Eksplorasi</string>
     <string name="explore_planets">Jelajahi Planet</string>
     <string name="planets_discover">8 planet untuk ditemukan</string>
+    <string name="cosmos_title">COSMOS ✦</string>
+    <string name="journey_title">Jelajahi Galaksi</string>
     <string name="made_for_explorers">Dibuat untuk penjelajah yang ingin tahu ✦</string>
 
+    <!-- APOD -->
+    <string name="apod_title">Foto Astronomi Hari Ini</string>
+    <string name="apod_subtitle">Disediakan oleh NASA APOD API</string>
+    <string name="apod_video_hint">Konten video — ketuk untuk melihat</string>
+    <string name="pick_date">Pilih Tanggal</string>
+
+    <!-- Mars -->
+    <string name="mars_empty">Tidak ada foto tersedia untuk tanggal ini. Coba tanggal lain.</string>
+    <string name="load_more">Muat Lebih Banyak</string>
+
+    <!-- NEO -->
+    <string name="neo_empty">Tidak ada objek terdeteksi dalam rentang waktu ini.</string>
+    <string name="neo_tracking">Memantau %1$d objek langit</string>
+    <string name="neo_source">Data dari NASA NeoWs API</string>
+    <string name="neo_approach_date">Pendekatan: %1$s</string>
+    <string name="neo_diameter">Diameter</string>
+    <string name="neo_speed">Kecepatan</string>
+    <string name="neo_distance">Jarak</string>
+
+    <!-- Favorites -->
+    <string name="favorites_empty">Belum ada item favorit.\nTambahkan dari APOD atau Mars.</string>
+
+    <!-- Settings -->
+    <string name="settings">Pengaturan</string>
+    <string name="settings_theme">Tema Tampilan</string>
+    <string name="settings_about">Tentang Aplikasi</string>
+    <string name="theme_light">Mode Terang</string>
+    <string name="theme_dark">Mode Gelap</string>
+    <string name="theme_system">Ikuti Sistem</string>
+    <string name="language">Bahasa</string>
+    <string name="about_app_name">Nama Aplikasi</string>
+    <string name="about_version">Versi</string>
+    <string name="about_data_source">Sumber Data</string>
+    <string name="about_api_key">API Key</string>
+
+    <!-- Common -->
+    <string name="back_to_explore">← Kembali</string>
+    <string name="retry">Coba Lagi</string>
+    <string name="loading">Memuat…</string>
+    <string name="error_no_internet">Tidak ada koneksi internet.</string>
+    <string name="error_timeout">Koneksi habis waktu. Periksa internet kamu.</string>
+
+    <!-- Existing planet strings -->
+    <string name="explore">Eksplorasi</string>
+    <string name="home">Beranda</string>
+    <string name="dark_mode">Mode Gelap</string>
     <string name="special_discovery">PENEMUAN ISTIMEWA</string>
     <string name="beyond_stars">Melampaui Bintang</string>
     <string name="hero_description">Jelajahi misteri alam semesta kita.</string>
-
-    <string name="home">Beranda</string>
-    <string name="explore">Eksplorasi</string>
-
-    <!-- NASA Gallery -->
     <string name="nasa_gallery">Galeri Antariksa NASA</string>
-    <string name="loading_gallery">Memuat galeri antariksa...</string>
+    <string name="loading_gallery">Memuat galeri antariksa…</string>
     <string name="gallery_unavailable">Galeri belum tersedia.</string>
     <string name="gallery_empty">Belum ada gambar tersedia.</string>
     <string name="gallery_error">Gagal mengambil gambar NASA.</string>
-
-    <!-- Explore -->
-    <string name="search_planets">Cari planet...</string>
+    <string name="search_planets">Cari planet…</string>
     <string name="no_planets_found">Planet tidak ditemukan.</string>
-
-    <!-- Planet Detail -->
-    <string name="back_to_explore">← Kembali ke Eksplorasi</string>
     <string name="planet_information">Informasi Planet</string>
     <string name="distance_from_sun">Jarak dari Matahari</string>
     <string name="diameter">Diameter</string>
     <string name="rotation">Rotasi</string>
     <string name="revolution">Revolusi</string>
     <string name="did_you_know">✦ Tahukah Kamu?</string>
-
-    <!-- Settings -->
-    <string name="settings">Pengaturan</string>
-    <string name="dark_mode">Mode Gelap</string>
-
-    <string name="mercury_description">Planet terkecil</string>
-    <string name="mercury_fact">Merkurius adalah planet yang paling dekat dengan Matahari.</string>
-
-    <string name="venus_description">Planet terpanas</string>
-    <string name="venus_fact">Venus memiliki atmosfer dengan suhu yang sangat tinggi.</string>
-
-    <string name="earth_description">Planet tempat tinggal kita</string>
-    <string name="earth_fact">Bumi adalah satu-satunya planet yang diketahui mendukung kehidupan.</string>
-
-    <string name="mars_description">Planet merah</string>
-    <string name="mars_fact">Mars memiliki gunung berapi terbesar di Tata Surya.</string>
-
-    <string name="jupiter_description">Planet raksasa gas</string>
-    <string name="jupiter_fact">Jupiter adalah planet terbesar di Tata Surya.</string>
-
-    <string name="saturn_description">Planet bercincin</string>
-    <string name="saturn_fact">Saturnus terkenal dengan cincin-cincinnya yang spektakuler.</string>
-
-    <string name="uranus_description">Planet raksasa es</string>
-    <string name="uranus_fact">Uranus berotasi dengan posisi sumbu yang sangat miring.</string>
-
-    <string name="neptune_description">Planet terjauh</string>
-    <string name="neptune_fact">Neptunus memiliki angin yang sangat kuat.</string>
-
     <string name="mercury_name">Merkurius</string>
     <string name="venus_name">Venus</string>
     <string name="earth_name">Bumi</string>
@@ -73,9 +89,22 @@
     <string name="saturn_name">Saturnus</string>
     <string name="uranus_name">Uranus</string>
     <string name="neptune_name">Neptunus</string>
-
-    <string name="language">Bahasa</string>
-
+    <string name="mercury_description">Planet terkecil</string>
+    <string name="mercury_fact">Merkurius adalah planet yang paling dekat dengan Matahari.</string>
+    <string name="venus_description">Planet terpanas</string>
+    <string name="venus_fact">Venus memiliki atmosfer dengan suhu yang sangat tinggi.</string>
+    <string name="earth_description">Planet tempat tinggal kita</string>
+    <string name="earth_fact">Bumi adalah satu-satunya planet yang diketahui mendukung kehidupan.</string>
+    <string name="mars_description">Planet merah</string>
+    <string name="mars_fact">Mars memiliki gunung berapi terbesar di Tata Surya.</string>
+    <string name="jupiter_description">Planet raksasa gas</string>
+    <string name="jupiter_fact">Jupiter adalah planet terbesar di Tata Surya.</string>
+    <string name="saturn_description">Planet bercincin</string>
+    <string name="saturn_fact">Saturnus terkenal dengan cincin-cincinnya yang spektakuler.</string>
+    <string name="uranus_description">Planet raksasa es</string>
+    <string name="uranus_fact">Uranus berotasi dengan posisi sumbu yang sangat miring.</string>
+    <string name="neptune_description">Planet terjauh</string>
+    <string name="neptune_fact">Neptunus memiliki angin yang sangat kuat.</string>
     <string name="million">juta</string>
     <string name="earth_days">hari Bumi</string>
     <string name="earth_years">tahun Bumi</string>
