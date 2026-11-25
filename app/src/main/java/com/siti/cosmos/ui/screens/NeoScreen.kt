@@ -88,6 +88,14 @@ fun NeoScreen(onBack: () -> Unit) {
                                 }
                             }
                             Spacer(Modifier.height(4.dp))
+                            // Cache/offline indicator
+                            if (state.cacheLabel.isNotBlank()) {
+                                CacheBanner(
+                                    label    = state.cacheLabel,
+                                    modifier = Modifier.padding(top = 4.dp)
+                                )
+                                Spacer(Modifier.height(4.dp))
+                            }
                         }
                         items(state.objects, key = { it.id }) { neo ->
                             NeoCard(neo = neo)

@@ -115,6 +115,12 @@ fun MarsScreen(
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         modifier = Modifier.weight(1f)
                     ) {
+                        // Cache banner as first full-width item
+                        if (state.cacheLabel.isNotBlank()) {
+                            item(span = { GridItemSpan(2) }) {
+                                CacheBanner(label = state.cacheLabel)
+                            }
+                        }
                         items(state.photos, key = { it.id }) { photo ->
                             MarsPhotoCard(
                                 photo = photo,

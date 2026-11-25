@@ -32,7 +32,6 @@ import com.siti.cosmos.ui.components.*
 import com.siti.cosmos.ui.viewmodel.ApodViewModel
 import com.siti.cosmos.ui.viewmodel.FavoritesViewModel
 import java.util.Calendar
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ApodScreen(
@@ -97,6 +96,10 @@ fun ApodScreen(
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
                     ) {
+                        // Cache/offline banner
+                        if (state.cacheLabel.isNotBlank()) {
+                            CacheBanner(label = state.cacheLabel)
+                        }
                         // ── Hero image / video ──────────────────────────────────
                         Box(modifier = Modifier.fillMaxWidth().height(300.dp)) {
                             if (apod.mediaType == "video") {

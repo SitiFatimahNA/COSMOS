@@ -22,6 +22,27 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
+// ── Cache/offline indicator banner ───────────────────────────────────────────
+@Composable
+fun CacheBanner(label: String, modifier: Modifier = Modifier) {
+    if (label.isBlank()) return
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .padding(horizontal = 16.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        Text("📡", fontSize = 12.sp)
+        Text(
+            label,
+            fontSize = 11.sp,
+            color    = MaterialTheme.colorScheme.onSecondaryContainer
+        )
+    }
+}
+
 // ── Loading shimmer ────────────────────────────────────────────────────────────
 @Composable
 fun ShimmerBox(modifier: Modifier = Modifier) {
