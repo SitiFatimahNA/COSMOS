@@ -1,29 +1,24 @@
-package com.siti.cosmos
+﻿package com.siti.cosmos
 
 import com.siti.cosmos.ui.theme.COSMOSTheme
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.res.stringResource
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -32,38 +27,39 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.window.Dialog
 
-// ── Colour palette ─────────────────────────────────────────────────────────────
-val CosmosBlack    = Color(0xFF080808)
-val CosmosCardDark = Color(0xFF111111)
-val CosmosCard2    = Color(0xFF181818)
-val CosmosStroke   = Color(0xFF242424)
-val CosmosWhite    = Color(0xFFFFFFFF)
-val CosmosGrey     = Color(0xFF888888)
-val CosmosGreyDark = Color(0xFF444444)
 
-// Legacy aliases used in ExploreScreen / NasaGallery
 val SpaceBackground = Color(0xFFF5F6FA)
-val SpacePurple     = Color(0xFF7257E8)
-val SpaceBlue       = Color(0xFFE8E5FF)
-val SpaceCard       = Color(0xFFFFFFFF)
-val SpaceWhite      = Color(0xFF20243A)
-val DarkBackground  = CosmosBlack
-val DarkCard        = CosmosCardDark
-val DarkWhite       = CosmosWhite
-val DarkBlue        = Color(0xFF263C78)
+val SpacePurple = Color(0xFF7257E8)
+val SpaceBlue = Color(0xFFE8E5FF)
+val SpaceCard = Color(0xFFFFFFFF)
+val SpaceWhite = Color(0xFF20243A)
+
+val DarkBackground = Color(0xFF0B102B)
+val DarkCard = Color(0xFF192348)
+val DarkWhite = Color(0xFFF5F3FF)
+val DarkBlue = Color(0xFF263C78)
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            COSMOSTheme(darkTheme = true, dynamicColor = false) {
+            val systemDarkTheme = isSystemInDarkTheme()
+
+            var darkTheme by remember {
+                mutableStateOf(systemDarkTheme)
+            }
+
+            COSMOSTheme(
+                darkTheme = darkTheme,
+                dynamicColor = false
+            ) {
                 CosmosApp(
-                    onLanguageChange = { tag ->
+                    darkTheme = darkTheme,
+                    onThemeChange = { darkTheme = it },
+                    onLanguageChange = { languageTag ->
                         AppCompatDelegate.setApplicationLocales(
-                            LocaleListCompat.forLanguageTags(tag)
+                            LocaleListCompat.forLanguageTags(languageTag)
                         )
                     }
                 )
@@ -72,7 +68,7 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-// ── Data model ─────────────────────────────────────────────────────────────────
+
 data class Planet(
     val name: String,
     val imageRes: Int,
@@ -82,398 +78,545 @@ data class Planet(
     val diameter: String = "-",
     val rotation: String = "-",
     val revolution: String = "-",
-    val fact: String = "-",
-    val type: String = "Terrestrial Planet",
-    val wikiSlug: String = ""          // e.g. "Mars" → opens Wikipedia
+    val fact: String = "-"
 )
 
-// ── App root ───────────────────────────────────────────────────────────────────
+
 @Composable
-fun CosmosApp(onLanguageChange: (String) -> Unit) {
+fun CosmosApp(
+    darkTheme: Boolean,
+    onThemeChange: (Boolean) -> Unit,
+    onLanguageChange: (String) -> Unit
+) {
     val planets = getPlanets()
 
-    // Shared navigation state
-    var selectedTab    by rememberSaveable { mutableIntStateOf(0) }
-    var selectedPlanet by remember { mutableStateOf<Planet?>(null) }
+    var selectedTab by rememberSaveable {
+        mutableIntStateOf(0)
+    }
 
-    // Shared search dialog state (reachable from Home top-bar "🔍" button)
-    var showSearch     by remember { mutableStateOf(false) }
+    var selectedPlanet by remember {
+        mutableStateOf<Planet?>(null)
+    }
+    val backgroundColor = if (darkTheme) {
+        DarkBackground
+    } else {
+        SpaceBackground
+    }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(CosmosBlack)
-    ) {
-        if (selectedPlanet != null) {
-            PlanetDetailScreen(
-                planet = selectedPlanet!!,
-                onBack = { selectedPlanet = null }
-            )
-        } else {
-            Scaffold(
-                containerColor = CosmosBlack,
-                bottomBar = {
-                    CosmosBottomBar(
-                        selectedTab  = selectedTab,
-                        onTabSelected = { selectedTab = it }
-                    )
+    val cardColor = if (darkTheme) {
+        DarkCard
+    } else {
+        SpaceCard
+    }
+
+    val textColor = if (darkTheme) {
+        DarkWhite
+    } else {
+        SpaceWhite
+    }
+
+    val blueColor = if (darkTheme) {
+        DarkBlue
+    } else {
+        SpaceBlue
+    }
+
+
+    Scaffold(
+        containerColor = backgroundColor,
+        bottomBar = {
+            NavigationBar(
+                containerColor = cardColor
+            ) {
+                val tabs = listOf(
+                    stringResource(R.string.home) to "Γîé",
+                    stringResource(R.string.explore) to "ΓùÄ",
+                    stringResource(R.string.settings) to "ΓÜÖ"
+                )
+
+                    tabs.forEachIndexed { index, tab ->
+                        NavigationBarItem(
+                            selected = selectedTab == index,
+                            onClick = { selectedTab = index },
+                            icon = {
+                                Text(tab.second, fontSize = 22.sp)
+                            },
+                            label = { Text(tab.first) },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = if (darkTheme) Color.White else SpacePurple,
+                                selectedTextColor = SpacePurple,
+                                indicatorColor = if (darkTheme) DarkBlue else SpaceBlue,
+                                unselectedIconColor = if (darkTheme) Color.LightGray else Color.Gray,
+                                unselectedTextColor = if (darkTheme) Color.LightGray else Color.Gray
+                            )
+                        )
+                    }
                 }
-            ) { padding ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                ) {
+            }
+        ) { padding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+            ) {
+                if (selectedPlanet != null) {
+                    PlanetDetailScreen(
+                        planet = selectedPlanet!!,
+                        darkTheme = darkTheme,
+                        onBack = { selectedPlanet = null }
+                    )
+                } else {
                     when (selectedTab) {
-                        0 -> HomeScreen(
-                            planets       = planets,
-                            onPlanetClick = { selectedPlanet = it },
-                            onStartExplore = { selectedTab = 1 },
-                            onSearchClick  = { showSearch = true }
+                        0 -> DashboardScreen(
+                            planets = planets,
+                            darkTheme = darkTheme,
+                            onPlanetClick = { planet ->
+                                selectedPlanet = planet
+                            }
                         )
                         1 -> ExploreScreen(
-                            planets       = planets,
-                            darkTheme     = true,
-                            onPlanetClick = { selectedPlanet = it }
+                            planets = planets,
+                            darkTheme = darkTheme,
+                            onPlanetClick = { planet ->
+                                selectedPlanet = planet
+                            }
                         )
-                        else -> SettingsScreen(onLanguageChange = onLanguageChange)
+                        else -> SettingsScreen(
+                            darkTheme = darkTheme,
+                            onThemeChange = onThemeChange,
+                            onLanguageChange = onLanguageChange
+                        )
                     }
                 }
             }
         }
 
-        // ── Global Search Dialog ──────────────────────────────────────────────
-        if (showSearch) {
-            SearchDialog(
-                planets   = planets,
-                onDismiss = { showSearch = false },
-                onSelect  = { planet ->
-                    showSearch     = false
-                    selectedPlanet = planet
-                }
-            )
-        }
-    }
 }
 
-// ── Bottom Navigation ──────────────────────────────────────────────────────────
 @Composable
-fun CosmosBottomBar(selectedTab: Int, onTabSelected: (Int) -> Unit) {
-    val items = listOf("⌂" to "Home", "◎" to "Explore", "⚙" to "Settings")
-    NavigationBar(
-        containerColor = CosmosCardDark,
-        tonalElevation  = 0.dp,
-        modifier        = Modifier.height(64.dp)
-    ) {
-        items.forEachIndexed { index, (icon, label) ->
-            val selected = selectedTab == index
-            NavigationBarItem(
-                selected = selected,
-                onClick  = { onTabSelected(index) },
-                icon = {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(icon, fontSize = 20.sp, color = if (selected) CosmosWhite else CosmosGreyDark)
-                        if (selected) {
-                            Spacer(Modifier.height(3.dp))
-                            Box(
-                                modifier = Modifier
-                                    .width(16.dp).height(3.dp)
-                                    .clip(RoundedCornerShape(2.dp))
-                                    .background(CosmosWhite)
-                            )
-                        }
-                    }
-                },
-                label  = null,
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor   = CosmosWhite,
-                    unselectedIconColor = CosmosGreyDark,
-                    indicatorColor      = Color.Transparent
-                )
-            )
-        }
-    }
+fun getPlanets(): List<Planet> {
+    return listOf(
+        Planet(
+            name = stringResource(R.string.mercury_name),
+            imageRes = R.drawable.planet_mercury,
+            description = stringResource(R.string.mercury_description),
+            color = Color(0xFF777C91),
+            distance = "57.9 ${stringResource(R.string.million)} km",
+            diameter = "4,879 km",
+            rotation = "58.6 ${stringResource(R.string.earth_days)}",
+            revolution = "88 ${stringResource(R.string.earth_days)}",
+            fact = stringResource(R.string.mercury_fact)
+        ),
+        Planet(
+            name = stringResource(R.string.venus_name),
+            imageRes = R.drawable.planet_venus,
+            description = stringResource(R.string.venus_description),
+            color = Color(0xFFD58B55),
+            distance = "108.2 ${stringResource(R.string.million)} km",
+            diameter = "12,104 km",
+            rotation = "243 ${stringResource(R.string.earth_days)}",
+            revolution = "225 ${stringResource(R.string.earth_days)}",
+            fact = stringResource(R.string.venus_fact)
+        ),
+        Planet(
+            name = stringResource(R.string.earth_name),
+            imageRes = R.drawable.planet_earth,
+            description = stringResource(R.string.earth_description),
+            color = Color(0xFF348FE0),
+            distance = "149.6 ${stringResource(R.string.million)} km",
+            diameter = "12,742 km",
+            rotation = "24 ${stringResource(R.string.hours)}",
+            revolution = "365.25 ${stringResource(R.string.days)}",
+            fact = stringResource(R.string.earth_fact)
+        ),
+        Planet(
+            name = stringResource(R.string.mars_name),
+            imageRes = R.drawable.planet_mars,
+            description = stringResource(R.string.mars_description),
+            color = Color(0xFFD65B50),
+            distance = "227.9 million km",
+            diameter = "6,779 km",
+            rotation = "24.6 ${stringResource(R.string.hours)}",
+            revolution = "687 ${stringResource(R.string.earth_days)}",
+            fact = stringResource(R.string.mars_fact)
+        ),
+        Planet(
+            name = stringResource(R.string.jupiter_name),
+            imageRes = R.drawable.planet_jupiter,
+            description = stringResource(R.string.jupiter_description),
+            color = Color(0xFFC58A64),
+            distance = "778.5 ${stringResource(R.string.million)} km",
+            diameter = "139,820 km",
+            rotation = "9.9 ${stringResource(R.string.hours)}",
+            revolution = "11.86 ${stringResource(R.string.earth_years)}",
+            fact = stringResource(R.string.jupiter_fact)
+        ),
+        Planet(
+            name = stringResource(R.string.saturn_name),
+            imageRes = R.drawable.planet_saturn,
+            description = stringResource(R.string.saturn_description),
+            color = Color(0xFFD9B56D),
+            distance = "1,434 ${stringResource(R.string.million)} km",
+            diameter = "116,460 km",
+            rotation = "10.7 ${stringResource(R.string.hours)}",
+            revolution = "29.45 ${stringResource(R.string.earth_years)}",
+            fact = stringResource(R.string.saturn_fact)
+        ),
+        Planet(
+            name = stringResource(R.string.uranus_name),
+            imageRes = R.drawable.planet_uranus,
+            description = stringResource(R.string.uranus_description),
+            color = Color(0xFF65C9D6),
+            distance = "2,871 ${stringResource(R.string.million)} km",
+            diameter = "50,724 km",
+            rotation = "17.2 ${stringResource(R.string.hours)}",
+            revolution = "84 ${stringResource(R.string.earth_years)}",
+            fact = stringResource(R.string.uranus_fact)
+        ),
+        Planet(
+            name = stringResource(R.string.neptune_name),
+            imageRes = R.drawable.planet_neptune,
+            description = stringResource(R.string.neptune_description),
+            color = Color(0xFF4668DB),
+            distance = "4,495 ${stringResource(R.string.million)} km",
+            diameter = "49,244 km",
+            rotation = "16.1 ${stringResource(R.string.hours)}",
+            revolution = "164.8 ${stringResource(R.string.earth_years)}",
+            fact = stringResource(R.string.neptune_fact)
+        )
+    )
 }
 
-// ── Search Dialog ──────────────────────────────────────────────────────────────
 @Composable
-fun SearchDialog(
+fun DashboardScreen(
     planets: List<Planet>,
-    onDismiss: () -> Unit,
-    onSelect: (Planet) -> Unit
+    darkTheme: Boolean,
+    onPlanetClick: (Planet) -> Unit
 ) {
-    var query by remember { mutableStateOf("") }
-    val results = planets.filter { it.name.contains(query, ignoreCase = true) }
+    val textColor = if (darkTheme) DarkWhite else SpaceWhite
+    val subtitleColor = if (darkTheme) Color.LightGray else Color.DarkGray
+    BoxWithConstraints(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        val isLandscape = maxWidth > maxHeight
 
-    Dialog(onDismissRequest = onDismiss) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(20.dp))
-                .background(CosmosCardDark)
-                .padding(20.dp)
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                horizontal = if (isLandscape) 28.dp else 20.dp,
+                vertical = 20.dp
+            ),
+            verticalArrangement = Arrangement.spacedBy(22.dp)
         ) {
-            Text("Search Planets", color = CosmosWhite, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-            Spacer(Modifier.height(12.dp))
-            OutlinedTextField(
-                value           = query,
-                onValueChange   = { query = it },
-                placeholder     = { Text("e.g. Mars", color = CosmosGrey) },
-                singleLine      = true,
-                modifier        = Modifier.fillMaxWidth(),
-                shape           = RoundedCornerShape(12.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor      = CosmosWhite,
-                    unfocusedTextColor    = CosmosWhite,
-                    focusedBorderColor    = CosmosGrey,
-                    unfocusedBorderColor  = CosmosStroke,
-                    cursorColor           = CosmosWhite,
-                    focusedContainerColor   = CosmosCard2,
-                    unfocusedContainerColor = CosmosCard2
-                )
-            )
-            Spacer(Modifier.height(10.dp))
-            results.forEach { planet ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(10.dp))
-                        .clickable { onSelect(planet) }
-                        .padding(vertical = 10.dp, horizontal = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(36.dp)
-                            .clip(CircleShape)
-                            .background(planet.color.copy(alpha = 0.2f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(planet.imageRes).crossfade(true).build(),
-                            contentDescription = planet.name,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.size(36.dp).clip(CircleShape)
-                        )
-                    }
-                    Spacer(Modifier.width(12.dp))
-                    Column {
-                        Text(planet.name, color = CosmosWhite, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
-                        Text(planet.type, color = CosmosGrey, fontSize = 11.sp)
-                    }
-                    Spacer(Modifier.weight(1f))
-                    Text("→", color = CosmosGrey, fontSize = 16.sp)
-                }
-                Divider(color = CosmosStroke, thickness = 0.5.dp)
-            }
-        }
-    }
-}
-
-// ── Home Screen ────────────────────────────────────────────────────────────────
-@Composable
-fun HomeScreen(
-    planets: List<Planet>,
-    onPlanetClick:  (Planet) -> Unit,
-    onStartExplore: () -> Unit,
-    onSearchClick:  () -> Unit
-) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize().background(CosmosBlack),
-        contentPadding = PaddingValues(bottom = 16.dp)
-    ) {
-        // ── Top bar ────────────────────────────────────────────────────────────
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 18.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(38.dp).clip(CircleShape)
-                        .background(
-                            Brush.linearGradient(listOf(Color(0xFF8E44AD), Color(0xFFC0392B)))
-                        ),
-                    contentAlignment = Alignment.Center
-                ) { Text("👤", fontSize = 16.sp) }
-                Spacer(Modifier.width(10.dp))
-                Column(modifier = Modifier.weight(1f)) {
-                    Text("Hey,",   color = CosmosGrey,  fontSize = 11.sp)
-                    Text("Explorer", color = CosmosWhite, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-                }
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    // 🔍 Search button — opens search dialog
-                    SmallIconBtn("🔍", onClick = onSearchClick)
-                }
-            }
-        }
-
-        // ── Hero title ─────────────────────────────────────────────────────────
-        item {
-            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-                Text("Your personal",  color = CosmosWhite,    fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, lineHeight = 34.sp)
-                Text("guide to the",   color = CosmosGreyDark, fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, lineHeight = 34.sp)
-                Text("universe",       color = CosmosGreyDark, fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, lineHeight = 34.sp)
-                Spacer(Modifier.height(16.dp))
-                Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                    // "Start Explore" button → navigates to Explore tab
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(20.dp))
-                            .background(CosmosWhite)
-                            .clickable { onStartExplore() }
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                    ) {
-                        Text("Start Explore →", color = CosmosBlack, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                    }
+            item {
+                Column {
                     Text(
-                        "Perfect tool for\ndiscovering the\nwonders of the\nuniverse!",
-                        color = CosmosGrey, fontSize = 11.sp, lineHeight = 16.sp
+                        text = "COSMOS Γ£ª",
+                        color = Color(0xFFB9A8FF),
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(R.string.explore_universe),
+                        color = textColor,
+                        fontSize = if (isLandscape) 30.sp else 26.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = stringResource(R.string.journey_subtitle),
+                        color = subtitleColor,
+                        fontSize = 14.sp
                     )
                 }
             }
-        }
 
-        // ── Planets row ────────────────────────────────────────────────────────
-        item { Spacer(Modifier.height(24.dp)) }
-        item {
-            Text("Planets", color = CosmosWhite, fontSize = 18.sp, fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(horizontal = 20.dp))
-            Spacer(Modifier.height(12.dp))
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 20.dp),
-                horizontalArrangement = Arrangement.spacedBy(14.dp)
-            ) {
-                items(planets) { planet ->
-                    HomePlanetThumb(planet = planet, onClick = { onPlanetClick(planet) })
+            item {
+                HeroCard(isLandscape)
+            }
+
+            item {
+                SectionTitle(
+                    title = stringResource(R.string.explore_planets),
+                    subtitle = stringResource(R.string.planets_discover),
+                    darkTheme = darkTheme
+                )
+                Spacer(Modifier.height(12.dp))
+
+
+
+
+
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(planets) { planet ->
+                        PlanetCard(
+                            planet = planet,
+                            darkTheme = darkTheme,
+                            onClick = {
+                                onPlanetClick(planet)
+                            }
+                        )
+                    }
                 }
             }
-        }
 
-        // ── NASA Gallery ───────────────────────────────────────────────────────
-        item {
-            Spacer(Modifier.height(20.dp))
-            NasaGallery(darkTheme = true)
-        }
 
-        // ── Explore links ──────────────────────────────────────────────────────
-        item {
-            Spacer(Modifier.height(8.dp))
-            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-                ExploreLink(
-                    label = "Explore more about",
-                    value = "Asteroids, comets & meteors",
-                    url   = "https://en.wikipedia.org/wiki/Asteroid"
-                )
-                ExploreLink(
-                    label = "Learn more about",
-                    value = "Moons",
-                    url   = "https://en.wikipedia.org/wiki/Natural_satellite"
+            item {
+                NasaGallery(darkTheme = darkTheme)
+            }
+
+
+            item {
+                Text(
+                    text = stringResource(R.string.made_for_explorers),
+                    color = subtitleColor,
+                    fontSize = 12.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp)
                 )
             }
         }
     }
 }
 
-// ── Small icon button ──────────────────────────────────────────────────────────
 @Composable
-fun SmallIconBtn(icon: String, onClick: () -> Unit = {}) {
-    Box(
-        modifier = Modifier
-            .size(34.dp)
-            .clip(RoundedCornerShape(9.dp))
-            .background(CosmosCard2)
-            .clickable { onClick() },
-        contentAlignment = Alignment.Center
+fun HeroCard(isLandscape: Boolean) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = SpacePurple
+        )
     ) {
-        Text(icon, fontSize = 15.sp, color = CosmosGrey)
-    }
-}
-
-// ── Home planet thumbnail ──────────────────────────────────────────────────────
-@Composable
-fun HomePlanetThumb(planet: Planet, onClick: () -> Unit) {
-    Column(
-        modifier = Modifier.width(76.dp).clickable { onClick() },
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Box(
+        Row(
             modifier = Modifier
-                .size(68.dp)
-                .clip(CircleShape)
-                .background(planet.color.copy(alpha = 0.15f)),
-            contentAlignment = Alignment.Center
+                .fillMaxWidth()
+                .padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(planet.imageRes).crossfade(true).build(),
-                contentDescription = planet.name,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.size(68.dp).clip(CircleShape)
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = stringResource(R.string.special_discovery),
+                    color = Color.White.copy(alpha = 0.8f),
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(Modifier.height(10.dp))
+                Text(
+                    text = stringResource(R.string.beyond_stars),
+                    color = Color.White,
+                    fontSize = if (isLandscape) 25.sp else 22.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    text = stringResource(R.string.hero_description),
+                    color = Color.White.copy(alpha = 0.9f),
+                    fontSize = 13.sp
+                )
+            }
+
+            Text(
+                text = "≡ƒ¬É",
+                fontSize = if (isLandscape) 75.sp else 65.sp
             )
         }
-        Spacer(Modifier.height(6.dp))
-        Text(planet.name,  color = CosmosWhite, fontSize = 11.sp, fontWeight = FontWeight.SemiBold,
-            maxLines = 1, overflow = TextOverflow.Ellipsis)
-        Text(planet.type,  color = CosmosGrey,  fontSize = 9.sp,
-            maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }
 
-// ── Explore link row (opens browser) ──────────────────────────────────────────
+
 @Composable
-fun ExploreLink(label: String, value: String, url: String) {
-    val context = LocalContext.current
-    Row(
+fun SectionTitle(
+    title: String,
+    subtitle: String,
+    darkTheme: Boolean
+) {
+    val textColor = if (darkTheme) DarkWhite else SpaceWhite
+    val subtitleColor = if (darkTheme) Color.LightGray else Color.DarkGray
+
+    Column {
+        Text(
+            text = title,
+            color = textColor,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = subtitle,
+            color = subtitleColor,
+            fontSize = 12.sp
+        )
+    }
+}
+
+
+
+@Composable
+fun PlanetCard(
+    planet: Planet,
+    darkTheme: Boolean = false,
+    onClick: () -> Unit
+) {
+    val cardColor = if (darkTheme) DarkCard else SpaceCard
+    val textColor = if (darkTheme) DarkWhite else SpaceWhite
+    val descriptionColor = if (darkTheme) Color.LightGray else Color.DarkGray
+    Card(
+        onClick = onClick,
         modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                context.startActivity(intent)
-            }
-            .padding(vertical = 14.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .width(145.dp)
+            .height(190.dp),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = cardColor
+        )
     ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(label, color = CosmosGrey,  fontSize = 10.sp)
-            Spacer(Modifier.height(3.dp))
-            Text(value, color = CosmosWhite, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(14.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(90.dp)
+                    .background(
+                        planet.color.copy(alpha = 0.2f),
+                        RoundedCornerShape(16.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(planet.imageRes)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = planet.name,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            Text(
+                text = planet.name,
+                color = textColor,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp
+            )
+
+            Spacer(Modifier.height(4.dp))
+
+            Text(
+                text = planet.description,
+                color = descriptionColor,
+                fontSize = 11.sp
+            )
         }
-        Text("→", color = CosmosGrey, fontSize = 16.sp)
     }
-    Divider(color = CosmosStroke, thickness = 1.dp)
 }
 
-// ── Planet Detail Screen ───────────────────────────────────────────────────────
-@Composable
-fun PlanetDetailScreen(planet: Planet, onBack: () -> Unit) {
-    val context   = LocalContext.current
-    var isFav     by remember { mutableStateOf(false) }
-    val colors3d  = planetColors(planet.imageRes)
 
-    Box(
-        modifier = Modifier.fillMaxSize().background(CosmosBlack)
+@Composable
+fun GalleryCard(
+    title: String,
+    emoji: String,
+    color: Color,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.height(130.dp),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = color
+        )
     ) {
-        // ── Scrollable content ─────────────────────────────────────────────────
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 24.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(14.dp),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // 3D planet hero
-            item {
+            Text(emoji, fontSize = 36.sp)
+            Text(
+                text = title,
+                color = Color.White,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+@Composable
+fun SimplePage(title: String, description: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(SpaceBackground)
+            .padding(24.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = title,
+            color = SpaceWhite,
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(Modifier.height(8.dp))
+        Text(
+            text = description,
+            color = Color.LightGray
+        )
+    }
+}
+
+
+@Composable
+fun PlanetDetailScreen(
+    planet: Planet,
+    darkTheme: Boolean,
+    onBack: () -> Unit
+) {
+    val backgroundColor = if (darkTheme) DarkBackground else SpaceBackground
+    val textColor = if (darkTheme) DarkWhite else SpaceWhite
+    val descriptionColor = if (darkTheme) Color.LightGray else Color.DarkGray
+    val colors3d = planetColors(planet.imageRes)
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(backgroundColor),
+        contentPadding = PaddingValues(20.dp),
+        verticalArrangement = Arrangement.spacedBy(18.dp)
+    ) {
+        item {
+            TextButton(onClick = onBack) {
+                Text(
+                    text = stringResource(R.string.back_to_explore),
+                    color = Color(0xFFB9A8FF)
+                )
+            }
+        }
+
+        item {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(28.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = planet.color.copy(alpha = 0.25f)
+                )
+            ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(320.dp)
-                        .background(
-                            Brush.radialGradient(
-                                colors = listOf(colors3d.ring.copy(alpha = 0.08f), CosmosBlack),
-                                radius = 600f
-                            )
-                        ),
+                        .height(260.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Planet3D(
@@ -481,329 +624,176 @@ fun PlanetDetailScreen(planet: Planet, onBack: () -> Unit) {
                         darkColor  = colors3d.dark,
                         lightColor = colors3d.light,
                         ringColor  = colors3d.ring,
-                        size       = 240.dp
+                        size       = 220.dp
                     )
                 }
             }
+        }
 
-            // Planet name + type
-            item {
-                Column(modifier = Modifier.padding(horizontal = 24.dp)) {
-                    Text(
-                        planet.name,
-                        color        = CosmosWhite,
-                        fontSize     = 48.sp,
-                        fontWeight   = FontWeight.Black,
-                        letterSpacing = (-1.5).sp
-                    )
-                    Text(planet.type, color = CosmosGrey, fontSize = 13.sp)
-                }
-            }
-
-            // Distance + action buttons
-            item {
-                Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)) {
-                    Text("Distance from Earth", color = CosmosGrey, fontSize = 10.sp)
-                    Spacer(Modifier.height(4.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(planet.distance, color = CosmosWhite, fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            // Share button — shares planet info
-                            ActionChip(label = "Share") {
-                                val shareText = "🪐 ${planet.name} (${planet.type})\n" +
-                                        "Distance: ${planet.distance}\n" +
-                                        "Diameter: ${planet.diameter}\n\n" +
-                                        planet.description
-                                val intent = Intent(Intent.ACTION_SEND).apply {
-                                    type    = "text/plain"
-                                    putExtra(Intent.EXTRA_TEXT, shareText)
-                                }
-                                context.startActivity(Intent.createChooser(intent, "Share ${planet.name}"))
-                            }
-                            // Visit button — opens Wikipedia
-                            ActionChip(label = "Visit →", filled = true) {
-                                val slug   = planet.wikiSlug.ifBlank { planet.name }
-                                val intent = Intent(Intent.ACTION_VIEW,
-                                    Uri.parse("https://en.wikipedia.org/wiki/$slug"))
-                                context.startActivity(intent)
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Description
-            item {
+        item {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
-                    planet.description,
-                    color = CosmosGrey,
-                    fontSize = 14.sp,
-                    lineHeight = 20.sp,
-                    modifier = Modifier.padding(horizontal = 24.dp)
+                    text = planet.name,
+                    color = textColor,
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = planet.description,
+                    color = descriptionColor,
+                    fontSize = 16.sp
                 )
             }
+        }
 
-            // Stats grid
-            item {
-                Spacer(Modifier.height(20.dp))
-                Text("Planet Information",
-                    color = CosmosWhite, fontSize = 16.sp, fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 24.dp))
-                Spacer(Modifier.height(12.dp))
-                Row(
-                    modifier = Modifier.padding(horizontal = 24.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    DetailStatCard("Diameter",   planet.diameter,   Modifier.weight(1f))
-                    DetailStatCard("Rotation",   planet.rotation,   Modifier.weight(1f))
-                    DetailStatCard("Revolution", planet.revolution, Modifier.weight(1f))
-                }
-                Spacer(Modifier.height(10.dp))
-                Row(
-                    modifier = Modifier.padding(horizontal = 24.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    DetailStatCard("Distance", planet.distance, Modifier.weight(1f))
-                    DetailStatCard("Type",     planet.type,     Modifier.weight(1f))
-                }
-            }
+        item {
+            Text(
+                text = stringResource(R.string.planet_information),
+                color = textColor,
+                fontSize = 21.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
 
-            // Fun fact card
-            item {
-                Spacer(Modifier.height(16.dp))
-                Column(
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .clip(RoundedCornerShape(18.dp))
-                        .background(colors3d.base.copy(alpha = 0.18f))
-                        .padding(18.dp)
-                ) {
-                    Text("✦  Did you know?",
-                        color = CosmosWhite, fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                    Spacer(Modifier.height(8.dp))
-                    Text(planet.fact, color = CosmosGrey, fontSize = 13.sp, lineHeight = 19.sp)
-                }
-                Spacer(Modifier.height(8.dp))
+        item {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                InfoCard(stringResource(R.string.distance_from_sun), planet.distance, darkTheme)
+                InfoCard(stringResource(R.string.diameter), planet.diameter, darkTheme)
+                InfoCard(stringResource(R.string.rotation), planet.rotation, darkTheme)
+                InfoCard(stringResource(R.string.revolution), planet.revolution, darkTheme)
             }
         }
 
-        // ── Overlay top bar (back + favourite) ────────────────────────────────
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding()
-                .padding(horizontal = 20.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Back button
-            Box(
-                modifier = Modifier
-                    .size(38.dp).clip(CircleShape)
-                    .background(Color.Black.copy(alpha = 0.45f))
-                    .clickable { onBack() },
-                contentAlignment = Alignment.Center
-            ) { Text("←", color = CosmosWhite, fontSize = 18.sp) }
-
-            Spacer(Modifier.weight(1f))
-
-            // Favourite toggle
-            Box(
-                modifier = Modifier
-                    .size(38.dp).clip(CircleShape)
-                    .background(Color.Black.copy(alpha = 0.45f))
-                    .clickable { isFav = !isFav },
-                contentAlignment = Alignment.Center
+        item {
+            Card(
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = SpacePurple
+                )
             ) {
-                Text(if (isFav) "♥" else "♡",
-                    color = if (isFav) Color(0xFFE74C3C) else CosmosWhite,
-                    fontSize = 18.sp)
+                Column(Modifier.padding(18.dp)) {
+                    Text(
+                        text = stringResource(R.string.did_you_know),
+                        color = Color.White,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = planet.fact,
+                        color = Color.White,
+                        fontSize = 14.sp
+                    )
+                }
             }
         }
     }
 }
 
-// ── Reusable chips for the detail screen ──────────────────────────────────────
 @Composable
-fun ActionChip(label: String, filled: Boolean = false, onClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(10.dp))
-            .background(if (filled) CosmosWhite else CosmosCard2)
-            .clickable { onClick() }
-            .padding(horizontal = 14.dp, vertical = 8.dp)
-    ) {
-        Text(
-            label,
-            color      = if (filled) CosmosBlack else CosmosWhite,
-            fontSize   = 12.sp,
-            fontWeight = FontWeight.SemiBold
+fun InfoCard(
+    title: String,
+    value: String,
+    darkTheme: Boolean
+) {
+    val cardColor = if (darkTheme) DarkCard else SpaceCard
+    val titleColor = if (darkTheme) Color.LightGray else Color.DarkGray
+    val valueColor = if (darkTheme) DarkWhite else SpaceWhite
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = cardColor
         )
-    }
-}
-
-@Composable
-fun DetailStatCard(title: String, value: String, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(14.dp))
-            .background(CosmosCard2)
-            .padding(12.dp)
     ) {
-        Text(title, color = CosmosGrey,  fontSize = 10.sp)
-        Spacer(Modifier.height(5.dp))
-        Text(value, color = CosmosWhite, fontSize = 12.sp,
-            fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis)
+        Column(Modifier.padding(16.dp)) {
+            Text(
+                text = title,
+                color = titleColor,
+                fontSize = 13.sp
+            )
+            Spacer(Modifier.height(5.dp))
+            Text(
+                text = value,
+                color = valueColor,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
 
-// ── Planet data ────────────────────────────────────────────────────────────────
-@Composable
-fun getPlanets(): List<Planet> = listOf(
-    Planet(
-        name        = stringResource(R.string.mercury_name),
-        imageRes    = R.drawable.planet_mercury,
-        description = stringResource(R.string.mercury_description),
-        color       = Color(0xFF777C91),
-        distance    = "77 million km",
-        diameter    = "4,879 km",
-        rotation    = "58.6 days",
-        revolution  = "88 days",
-        fact        = stringResource(R.string.mercury_fact),
-        type        = "Terrestrial Planet",
-        wikiSlug    = "Mercury_(planet)"
-    ),
-    Planet(
-        name        = stringResource(R.string.venus_name),
-        imageRes    = R.drawable.planet_venus,
-        description = stringResource(R.string.venus_description),
-        color       = Color(0xFFD58B55),
-        distance    = "261 million km",
-        diameter    = "12,104 km",
-        rotation    = "243 days",
-        revolution  = "225 days",
-        fact        = stringResource(R.string.venus_fact),
-        type        = "Terrestrial Planet",
-        wikiSlug    = "Venus"
-    ),
-    Planet(
-        name        = stringResource(R.string.earth_name),
-        imageRes    = R.drawable.planet_earth,
-        description = stringResource(R.string.earth_description),
-        color       = Color(0xFF348FE0),
-        distance    = "Home planet",
-        diameter    = "12,742 km",
-        rotation    = "24 hours",
-        revolution  = "365.25 days",
-        fact        = stringResource(R.string.earth_fact),
-        type        = "Terrestrial Planet",
-        wikiSlug    = "Earth"
-    ),
-    Planet(
-        name        = stringResource(R.string.mars_name),
-        imageRes    = R.drawable.planet_mars,
-        description = stringResource(R.string.mars_description),
-        color       = Color(0xFFD65B50),
-        distance    = "1.88 Earth Years",
-        diameter    = "6,779 km",
-        rotation    = "24.6 hours",
-        revolution  = "687 days",
-        fact        = stringResource(R.string.mars_fact),
-        type        = "Terrestrial Planet",
-        wikiSlug    = "Mars"
-    ),
-    Planet(
-        name        = stringResource(R.string.jupiter_name),
-        imageRes    = R.drawable.planet_jupiter,
-        description = stringResource(R.string.jupiter_description),
-        color       = Color(0xFFC58A64),
-        distance    = "628 million km",
-        diameter    = "139,820 km",
-        rotation    = "9.9 hours",
-        revolution  = "11.86 years",
-        fact        = stringResource(R.string.jupiter_fact),
-        type        = "Gas Giant",
-        wikiSlug    = "Jupiter"
-    ),
-    Planet(
-        name        = stringResource(R.string.saturn_name),
-        imageRes    = R.drawable.planet_saturn,
-        description = stringResource(R.string.saturn_description),
-        color       = Color(0xFFD9B56D),
-        distance    = "1.2 billion km",
-        diameter    = "116,460 km",
-        rotation    = "10.7 hours",
-        revolution  = "29.45 years",
-        fact        = stringResource(R.string.saturn_fact),
-        type        = "Gas Giant",
-        wikiSlug    = "Saturn"
-    ),
-    Planet(
-        name        = stringResource(R.string.uranus_name),
-        imageRes    = R.drawable.planet_uranus,
-        description = stringResource(R.string.uranus_description),
-        color       = Color(0xFF65C9D6),
-        distance    = "2.7 billion km",
-        diameter    = "50,724 km",
-        rotation    = "17.2 hours",
-        revolution  = "84 years",
-        fact        = stringResource(R.string.uranus_fact),
-        type        = "Ice Giant",
-        wikiSlug    = "Uranus"
-    ),
-    Planet(
-        name        = stringResource(R.string.neptune_name),
-        imageRes    = R.drawable.planet_neptune,
-        description = stringResource(R.string.neptune_description),
-        color       = Color(0xFF4668DB),
-        distance    = "4.3 billion km",
-        diameter    = "49,244 km",
-        rotation    = "16.1 hours",
-        revolution  = "164.8 years",
-        fact        = stringResource(R.string.neptune_fact),
-        type        = "Ice Giant",
-        wikiSlug    = "Neptune"
-    )
-)
 
-// ── Settings Screen ────────────────────────────────────────────────────────────
 @Composable
-fun SettingsScreen(onLanguageChange: (String) -> Unit) {
+fun SettingsScreen(
+    darkTheme: Boolean,
+    onThemeChange: (Boolean) -> Unit,
+    onLanguageChange: (String) -> Unit
+) {
+    val textColor = if (darkTheme) DarkWhite else SpaceWhite
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(CosmosBlack)
             .padding(20.dp)
     ) {
-        Text(stringResource(R.string.settings),
-            color = CosmosWhite, fontSize = 26.sp, fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(8.dp))
-        Text("Customise your experience", color = CosmosGrey, fontSize = 13.sp)
-        Spacer(Modifier.height(28.dp))
+        Text(
+            text = stringResource(R.string.settings),
+            color = textColor,
+            fontSize = 26.sp,
+            fontWeight = FontWeight.Bold
+        )
 
-        Text(stringResource(R.string.language),
-            color = CosmosGrey, fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(bottom = 12.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        // Dark Mode
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(R.string.dark_mode),
+                color = textColor,
+                modifier = Modifier.weight(1f)
+            )
+
+            Switch(
+                checked = darkTheme,
+                onCheckedChange = onThemeChange
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Language
+        Text(
+            text = stringResource(R.string.language),
+            color = textColor,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
             OutlinedButton(
-                onClick  = { onLanguageChange("id") },
-                modifier = Modifier.weight(1f),
-                shape    = RoundedCornerShape(12.dp),
-                colors   = ButtonDefaults.outlinedButtonColors(contentColor = CosmosWhite),
-                border   = androidx.compose.foundation.BorderStroke(1.dp, CosmosStroke)
-            ) { Text("🇮🇩  Indonesia") }
+                onClick = { onLanguageChange("id") },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Bahasa Indonesia")
+            }
 
             OutlinedButton(
-                onClick  = { onLanguageChange("en") },
-                modifier = Modifier.weight(1f),
-                shape    = RoundedCornerShape(12.dp),
-                colors   = ButtonDefaults.outlinedButtonColors(contentColor = CosmosWhite),
-                border   = androidx.compose.foundation.BorderStroke(1.dp, CosmosStroke)
-            ) { Text("🇺🇸  English") }
+                onClick = { onLanguageChange("en") },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("English")
+            }
         }
     }
 }
+
+

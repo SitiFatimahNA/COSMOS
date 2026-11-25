@@ -1,4 +1,4 @@
-package com.siti.cosmos.ui.theme
+﻿package com.siti.cosmos.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -9,25 +9,12 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFFFFFFFF),
-    onPrimary = Color(0xFF080808),
-    primaryContainer = Color(0xFF181818),
-    onPrimaryContainer = Color(0xFFFFFFFF),
-    secondary = Color(0xFF888888),
-    onSecondary = Color(0xFF080808),
-    secondaryContainer = Color(0xFF111111),
-    onSecondaryContainer = Color(0xFFFFFFFF),
-    tertiary = Color(0xFF65C9D6),
-    background = Color(0xFF080808),
-    onBackground = Color(0xFFFFFFFF),
-    surface = Color(0xFF111111),
-    onSurface = Color(0xFFFFFFFF),
-    surfaceVariant = Color(0xFF181818),
-    outline = Color(0xFF242424)
+    primary = Purple80,
+    secondary = PurpleGrey80,
+    tertiary = Pink80
 )
 
 private val LightColorScheme = lightColorScheme(
