@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun ExploreScreen(
@@ -18,7 +19,6 @@ fun ExploreScreen(
     onPlanetClick: (Planet) -> Unit
 ) {
     val textColor = if (darkTheme) DarkWhite else SpaceWhite
-    val cardTextColor = if (darkTheme) DarkWhite else SpaceWhite
     val emptyTextColor = if (darkTheme) Color.LightGray else Color.DarkGray
     var searchQuery by remember {
         mutableStateOf("")
@@ -34,7 +34,7 @@ fun ExploreScreen(
             .padding(20.dp)
     ) {
         Text(
-            text = "Explore Universe",
+            text = stringResource(R.string.explore_universe),
             color = textColor,
             style = MaterialTheme.typography.headlineMedium
         )
@@ -46,7 +46,7 @@ fun ExploreScreen(
             onValueChange = { searchQuery = it },
             modifier = Modifier.fillMaxWidth(),
             placeholder = {
-                Text("Search planets...")
+                Text(stringResource(R.string.search_planets))
             },
             singleLine = true
         )
@@ -55,7 +55,7 @@ fun ExploreScreen(
 
         if (filteredPlanets.isEmpty()) {
             Text(
-                text = "No planets found.",
+                text = stringResource(R.string.no_planets_found),
                 color = emptyTextColor
             )
         } else {

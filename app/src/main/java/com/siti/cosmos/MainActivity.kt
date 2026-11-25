@@ -2,7 +2,6 @@ package com.siti.cosmos
 
 import com.siti.cosmos.ui.theme.COSMOSTheme
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -20,6 +19,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.ui.res.stringResource
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 
 
 val SpaceBackground = Color(0xFFF5F6FA)
@@ -33,7 +36,7 @@ val DarkCard = Color(0xFF192348)
 val DarkWhite = Color(0xFFF5F3FF)
 val DarkBlue = Color(0xFF263C78)
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -49,7 +52,12 @@ class MainActivity : ComponentActivity() {
             ) {
                 CosmosApp(
                     darkTheme = darkTheme,
-                    onThemeChange = { darkTheme = it }
+                    onThemeChange = { darkTheme = it },
+                    onLanguageChange = { languageTag ->
+                        AppCompatDelegate.setApplicationLocales(
+                            LocaleListCompat.forLanguageTags(languageTag)
+                        )
+                    }
                 )
             }
         }
@@ -73,9 +81,15 @@ data class Planet(
 @Composable
 fun CosmosApp(
     darkTheme: Boolean,
-    onThemeChange: (Boolean) -> Unit
+    onThemeChange: (Boolean) -> Unit,
+    onLanguageChange: (String) -> Unit
 ) {
-    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    val planets = getPlanets()
+
+    var selectedTab by rememberSaveable {
+        mutableIntStateOf(0)
+    }
+
     var selectedPlanet by remember {
         mutableStateOf<Planet?>(null)
     }
@@ -110,11 +124,11 @@ fun CosmosApp(
             NavigationBar(
                 containerColor = cardColor
             ) {
-                    val tabs = listOf(
-                        "Home" to "⌂",
-                        "Explore" to "◎",
-                        "Settings" to "⚙"
-                    )
+                val tabs = listOf(
+                    stringResource(R.string.home) to "⌂",
+                    stringResource(R.string.explore) to "◎",
+                    stringResource(R.string.settings) to "⚙"
+                )
 
                     tabs.forEachIndexed { index, tab ->
                         NavigationBarItem(
@@ -150,6 +164,7 @@ fun CosmosApp(
                 } else {
                     when (selectedTab) {
                         0 -> DashboardScreen(
+                            planets = planets,
                             darkTheme = darkTheme,
                             onPlanetClick = { planet ->
                                 selectedPlanet = planet
@@ -164,7 +179,8 @@ fun CosmosApp(
                         )
                         else -> SettingsScreen(
                             darkTheme = darkTheme,
-                            onThemeChange = onThemeChange
+                            onThemeChange = onThemeChange,
+                            onLanguageChange = onLanguageChange
                         )
                     }
                 }
@@ -173,66 +189,73 @@ fun CosmosApp(
 
 }
 
-val planets = listOf(
-    Planet(
-        "Mercury", "🌑", "The smallest planet",
-        Color(0xFF777C91),
-        "57.9 million km", "4,879 km",
-        "58.6 Earth days", "88 Earth days",
-        "Mercury is the closest planet to the Sun."
-    ),
-    Planet(
-        "Venus", "🟠", "The hottest planet",
-        Color(0xFFD58B55),
-        "108.2 million km", "12,104 km",
-        "243 Earth days", "225 Earth days",
-        "Venus has an extremely hot atmosphere."
-    ),
-    Planet(
-        "Earth", "🌍", "Our home planet",
-        Color(0xFF348FE0),
-        "149.6 million km", "12,742 km",
-        "24 hours", "365.25 days",
-        "Earth is the only planet known to support life."
-    ),
-    Planet(
-        "Mars", "🔴", "The red planet",
-        Color(0xFFD65B50),
-        "227.9 million km", "6,779 km",
-        "24.6 hours", "687 Earth days",
-        "Mars has the largest volcano in the Solar System."
-    ),
-    Planet(
-        "Jupiter", "🪐", "The gas giant",
-        Color(0xFFC58A64),
-        "778.6 million km", "139,820 km",
-        "9.9 hours", "11.86 Earth years",
-        "Jupiter is the largest planet in our Solar System."
-    ),
-    Planet(
-        "Saturn", "🪐", "The ringed planet",
-        Color(0xFFD9B56D),
-        "1.43 billion km", "116,460 km",
-        "10.7 hours", "29.4 Earth years",
-        "Saturn is famous for its spectacular rings."
-    ),
-    Planet(
-        "Uranus", "🔵", "The ice giant",
-        Color(0xFF65C9D6),
-        "2.87 billion km", "50,724 km",
-        "17.2 hours", "84 Earth years",
-        "Uranus rotates on its side."
-    ),
-    Planet(
-        "Neptune", "🔵", "The distant planet",
-        Color(0xFF4668DB),
-        "4.50 billion km", "49,244 km",
-        "16.1 hours", "165 Earth years",
-        "Neptune has extremely powerful winds."
+@Composable
+fun getPlanets(): List<Planet> {
+    return listOf(
+        Planet(
+            stringResource(R.string.mercury_name),
+            "🌑",
+            stringResource(R.string.mercury_description),
+            Color(0xFF777C91),
+            "57.9 million km", "4,879 km",
+            "58.6 Earth days", "88 Earth days",
+            stringResource(R.string.mercury_fact)
+        ),
+        Planet(
+            stringResource(R.string.venus_name), "🟠", stringResource(R.string.venus_description),
+            Color(0xFFD58B55),
+            "108.2 million km", "12,104 km",
+            "243 Earth days", "225 Earth days",
+            stringResource(R.string.venus_fact)
+        ),
+        Planet(
+            stringResource(R.string.earth_name), "🌍", stringResource(R.string.earth_description),
+            Color(0xFF348FE0),
+            "149.6 million km", "12,742 km",
+            "24 hours", "365.25 days",
+            stringResource(R.string.earth_fact)
+        ),
+        Planet(
+            stringResource(R.string.mars_name), "🔴", stringResource(R.string.mars_description),
+            Color(0xFFD65B50),
+            "227.9 million km", "6,779 km",
+            "24.6 hours", "687 Earth days",
+            stringResource(R.string.mars_fact)
+        ),
+        Planet(
+            name = stringResource(R.string.jupiter_name), "🪐", stringResource(R.string.jupiter_description),
+            Color(0xFFC58A64),
+            "778.6 million km", "139,820 km",
+            "9.9 hours", "11.86 Earth years",
+            stringResource(R.string.jupiter_fact)
+        ),
+        Planet(
+            stringResource(R.string.saturn_name), "🪐", stringResource(R.string.saturn_description),
+            Color(0xFFD9B56D),
+            "1.43 billion km", "116,460 km",
+            "10.7 hours", "29.4 Earth years",
+            stringResource(R.string.saturn_fact)
+        ),
+        Planet(
+            stringResource(R.string.uranus_name), "🔵", stringResource(R.string.uranus_description),
+            Color(0xFF65C9D6),
+            "2.87 billion km", "50,724 km",
+            "17.2 hours", "84 Earth years",
+            stringResource(R.string.uranus_fact)
+        ),
+        Planet(
+            stringResource(R.string.neptune_name), "🔵", stringResource(R.string.neptune_description),
+            Color(0xFF4668DB),
+            "4.50 billion km", "49,244 km",
+            "16.1 hours", "165 Earth years",
+            stringResource(R.string.neptune_fact)
+        )
     )
-)
+}
+
 @Composable
 fun DashboardScreen(
+    planets: List<Planet>,
     darkTheme: Boolean,
     onPlanetClick: (Planet) -> Unit
 ) {
@@ -261,13 +284,13 @@ fun DashboardScreen(
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        text = "Explore the Universe",
+                        text = stringResource(R.string.explore_universe),
                         color = textColor,
                         fontSize = if (isLandscape) 30.sp else 26.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "Your journey through space starts here.",
+                        text = stringResource(R.string.journey_subtitle),
                         color = subtitleColor,
                         fontSize = 14.sp
                     )
@@ -279,7 +302,11 @@ fun DashboardScreen(
             }
 
             item {
-                SectionTitle("Explore Planets", "8 planets to discover")
+                SectionTitle(
+                    title = stringResource(R.string.explore_planets),
+                    subtitle = stringResource(R.string.planets_discover),
+                    darkTheme = darkTheme
+                )
                 Spacer(Modifier.height(12.dp))
 
 
@@ -309,7 +336,7 @@ fun DashboardScreen(
 
             item {
                 Text(
-                    text = "Made for curious explorers ✦",
+                    text = stringResource(R.string.made_for_explorers),
                     color = subtitleColor,
                     fontSize = 12.sp,
                     modifier = Modifier
@@ -340,21 +367,21 @@ fun HeroCard(isLandscape: Boolean) {
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "SPECIAL DISCOVERY",
+                    text = stringResource(R.string.special_discovery),
                     color = Color.White.copy(alpha = 0.8f),
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    text = "Beyond the Stars",
+                    text = stringResource(R.string.beyond_stars),
                     color = Color.White,
                     fontSize = if (isLandscape) 25.sp else 22.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(Modifier.height(6.dp))
                 Text(
-                    text = "Explore the mysteries of our universe.",
+                    text = stringResource(R.string.hero_description),
                     color = Color.White.copy(alpha = 0.9f),
                     fontSize = 13.sp
                 )
@@ -368,22 +395,31 @@ fun HeroCard(isLandscape: Boolean) {
     }
 }
 
+
 @Composable
-fun SectionTitle(title: String, subtitle: String) {
+fun SectionTitle(
+    title: String,
+    subtitle: String,
+    darkTheme: Boolean
+) {
+    val textColor = if (darkTheme) DarkWhite else SpaceWhite
+    val subtitleColor = if (darkTheme) Color.LightGray else Color.DarkGray
+
     Column {
         Text(
             text = title,
-            color = SpaceWhite,
+            color = textColor,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
         Text(
             text = subtitle,
-            color = Color.LightGray,
+            color = subtitleColor,
             fontSize = 12.sp
         )
     }
 }
+
 
 
 @Composable
@@ -512,7 +548,7 @@ fun PlanetDetailScreen(
     val backgroundColor = if (darkTheme) DarkBackground else SpaceBackground
     val textColor = if (darkTheme) DarkWhite else SpaceWhite
     val descriptionColor = if (darkTheme) Color.LightGray else Color.DarkGray
-    val infoCardColor = if (darkTheme) DarkCard else SpaceCard
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -523,7 +559,7 @@ fun PlanetDetailScreen(
         item {
             TextButton(onClick = onBack) {
                 Text(
-                    text = "← Back to Explore",
+                    text = stringResource(R.string.back_to_explore),
                     color = Color(0xFFB9A8FF)
                 )
             }
@@ -569,7 +605,7 @@ fun PlanetDetailScreen(
 
         item {
             Text(
-                text = "Planet Information",
+                text = stringResource(R.string.planet_information),
                 color = textColor,
                 fontSize = 21.sp,
                 fontWeight = FontWeight.Bold
@@ -578,10 +614,10 @@ fun PlanetDetailScreen(
 
         item {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                InfoCard("Distance from Sun", planet.distance, darkTheme)
-                InfoCard("Diameter", planet.diameter, darkTheme)
-                InfoCard("Rotation", planet.rotation, darkTheme)
-                InfoCard("Revolution", planet.revolution, darkTheme)
+                InfoCard(stringResource(R.string.distance_from_sun), planet.distance, darkTheme)
+                InfoCard(stringResource(R.string.diameter), planet.diameter, darkTheme)
+                InfoCard(stringResource(R.string.rotation), planet.rotation, darkTheme)
+                InfoCard(stringResource(R.string.revolution), planet.revolution, darkTheme)
             }
         }
 
@@ -589,12 +625,12 @@ fun PlanetDetailScreen(
             Card(
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = if (darkTheme) SpacePurple else SpacePurple
+                    containerColor = SpacePurple
                 )
             ) {
                 Column(Modifier.padding(18.dp)) {
                     Text(
-                        text = "✦ Did You Know?",
+                        text = stringResource(R.string.did_you_know),
                         color = Color.White,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
@@ -644,19 +680,22 @@ fun InfoCard(
     }
 }
 
+
 @Composable
 fun SettingsScreen(
     darkTheme: Boolean,
-    onThemeChange: (Boolean) -> Unit
+    onThemeChange: (Boolean) -> Unit,
+    onLanguageChange: (String) -> Unit
 ) {
     val textColor = if (darkTheme) DarkWhite else SpaceWhite
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(20.dp)
     ) {
         Text(
-            text = "Settings",
+            text = stringResource(R.string.settings),
             color = textColor,
             fontSize = 26.sp,
             fontWeight = FontWeight.Bold
@@ -664,12 +703,13 @@ fun SettingsScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
+        // Dark Mode
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Dark Mode",
+                text = stringResource(R.string.dark_mode),
                 color = textColor,
                 modifier = Modifier.weight(1f)
             )
@@ -679,6 +719,38 @@ fun SettingsScreen(
                 onCheckedChange = onThemeChange
             )
         }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Language
+        Text(
+            text = stringResource(R.string.language),
+            color = textColor,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            OutlinedButton(
+                onClick = { onLanguageChange("id") },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Bahasa Indonesia")
+            }
+
+            OutlinedButton(
+                onClick = { onLanguageChange("en") },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("English")
+            }
+        }
     }
 }
+
 

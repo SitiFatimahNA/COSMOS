@@ -16,7 +16,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,9 +25,12 @@ import com.siti.cosmos.data.model.NasaItem
 import com.siti.cosmos.data.repository.NasaRepository
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun NasaGallery(darkTheme: Boolean) {
+    val context = LocalContext.current
     val galleryCardColor = if (darkTheme) {
         DarkCard
     } else {
@@ -49,15 +51,15 @@ fun NasaGallery(darkTheme: Boolean) {
         mutableStateOf(true)
     }
 
-    var errorMessage by remember {
-        mutableStateOf<String?>(null)
+    var hasError by remember {
+        mutableStateOf(false)
     }
 
     LaunchedEffect(Unit) {
         try {
             images = NasaRepository().getSpaceImages("nebula")
         } catch (e: Exception) {
-            errorMessage = "Gagal mengambil gambar NASA"
+            hasError = true
         } finally {
             isLoading = false
         }
@@ -70,7 +72,7 @@ fun NasaGallery(darkTheme: Boolean) {
     ) {
 
         Text(
-            text = "NASA Space Gallery",
+            text = stringResource(R.string.nasa_gallery),
             color = galleryTextColor,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold
@@ -81,11 +83,16 @@ fun NasaGallery(darkTheme: Boolean) {
                 CircularProgressIndicator(
                     modifier = Modifier.padding(20.dp)
                 )
+                Text(
+                    text = stringResource(R.string.loading_gallery),
+                    color = galleryTextColor,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
             }
 
-            errorMessage != null -> {
+            hasError -> {
                 Text(
-                    text = errorMessage!!,
+                    text = stringResource(R.string.gallery_error),
                     modifier = Modifier.padding(12.dp),
                     color = MaterialTheme.colorScheme.error
                 )
@@ -93,7 +100,7 @@ fun NasaGallery(darkTheme: Boolean) {
 
             images.isEmpty() -> {
                 Text(
-                    text = "Belum ada gambar tersedia.",
+                    text = stringResource(R.string.gallery_empty),
                     modifier = Modifier.padding(12.dp),
                     color = galleryTextColor
                 )

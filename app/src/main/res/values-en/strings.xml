@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">COSMOS</string>
+    <string name="home">Home</string>
+    <string name="explore">Explore</string>
+    <string name="cosmos_title">COSMOS ✦</string>
+    <string name="explore_universe">Explore the Universe</string>
+    <string name="journey_subtitle">Your journey through space starts here.</string>
+    <string name="explore_planets">Explore Planets</string>
+    <string name="planets_discover">8 planets to discover</string>
+    <string name="special_discovery">SPECIAL DISCOVERY</string>
+    <string name="beyond_stars">Beyond the Stars</string>
+    <string name="hero_description">Explore the mysteries of our universe.</string>
+    <string name="made_for_explorers">Made for curious explorers ✦</string>
+    <string name="nasa_gallery">NASA Space Gallery</string>
+    <string name="loading_gallery">Loading space gallery...</string>
+    <string name="gallery_unavailable">Gallery unavailable.</string>
+    <string name="gallery_empty">No images available yet.</string>
+    <string name="gallery_error">Failed to load NASA images.</string>
+    <string name="search_planets">Search planets...</string>
+    <string name="no_planets_found">No planets found.</string>
+    <string name="back_to_explore">← Back to Explore</string>
+    <string name="planet_information">Planet Information</string>
+    <string name="distance_from_sun">Distance from Sun</string>
+    <string name="diameter">Diameter</string>
+    <string name="rotation">Rotation</string>
+    <string name="revolution">Revolution</string>
+    <string name="did_you_know">✦ Did You Know?</string>
+    <string name="settings">Settings</string>
+    <string name="dark_mode">Dark Mode</string>
+
+    <string name="mercury_description">The smallest planet</string>
+    <string name="mercury_fact">Mercury is the closest planet to the Sun.</string>
+
+    <string name="venus_description">The hottest planet</string>
+    <string name="venus_fact">Venus has an extremely hot atmosphere.</string>
+
+    <string name="earth_description">Our home planet</string>
+    <string name="earth_fact">Earth is the only planet known to support life.</string>
+
+    <string name="mars_description">The red planet</string>
+    <string name="mars_fact">Mars has the largest volcano in the Solar System.</string>
+
+    <string name="jupiter_description">The gas giant</string>
+    <string name="jupiter_fact">Jupiter is the largest planet in our Solar System.</string>
+
+    <string name="saturn_description">The ringed planet</string>
+    <string name="saturn_fact">Saturn is famous for its spectacular rings.</string>
+
+    <string name="uranus_description">The ice giant</string>
+    <string name="uranus_fact">Uranus rotates on its side.</string>
+
+    <string name="neptune_description">The distant planet</string>
+    <string name="neptune_fact">Neptune has extremely powerful winds.</string>
+
+    <string name="mercury_name">Mercury</string>
+    <string name="venus_name">Venus</string>
+    <string name="earth_name">Earth</string>
+    <string name="mars_name">Mars</string>
+    <string name="jupiter_name">Jupiter</string>
+    <string name="saturn_name">Saturn</string>
+    <string name="uranus_name">Uranus</string>
+    <string name="neptune_name">Neptune</string>
+
+    <string name="language">Language</string>
+</resources>
