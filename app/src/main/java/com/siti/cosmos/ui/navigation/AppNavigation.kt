@@ -2,11 +2,25 @@ package com.siti.cosmos.ui.navigation
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.padding
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.*
@@ -17,8 +31,25 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.siti.cosmos.ui.screens.*
+import com.siti.cosmos.ui.theme.*
 import com.siti.cosmos.ui.viewmodel.FavoritesViewModel
 import com.siti.cosmos.ui.viewmodel.SettingsViewModel
+
+// ── Bottom nav tab definition ──────────────────────────────────────────────────
+private data class BottomTab(
+    val route: String,
+    val iconOutlined: ImageVector,
+    val iconFilled: ImageVector,
+    val labelRes: String
+)
+
+private val bottomTabs = listOf(
+    BottomTab(NavRoutes.HOME,      Icons.Outlined.Home,            Icons.Filled.Home,            "Home"),
+    BottomTab(NavRoutes.APOD,      Icons.Outlined.PhotoCamera,     Icons.Outlined.PhotoCamera,   "APOD"),
+    BottomTab(NavRoutes.MARS,      Icons.Outlined.Explore,         Icons.Outlined.Explore,       "Mars"),
+    BottomTab(NavRoutes.NEO,       Icons.Outlined.Stars,           Icons.Outlined.Stars,         "NEO"),
+    BottomTab(NavRoutes.FAVORITES, Icons.Outlined.FavoriteBorder,  Icons.Filled.Favorite,        "Saved"),
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,15 +61,6 @@ fun AppNavigation(
     val navBackStack  by navController.currentBackStackEntryAsState()
     val currentRoute  = navBackStack?.destination?.route
 
-    // Tabs shown in bottom bar
-    data class BottomTab(val route: String, val icon: String, val label: String)
-    val bottomTabs = listOf(
-        BottomTab(NavRoutes.HOME,      "⌂",  "Home"),
-        BottomTab(NavRoutes.APOD,      "🌠", "APOD"),
-        BottomTab(NavRoutes.MARS,      "🔴", "Mars"),
-        BottomTab(NavRoutes.NEO,       "☄️", "NEO"),
-        BottomTab(NavRoutes.FAVORITES, "⭐", "Saved"),
-    )
     val showBottomBar = currentRoute in bottomTabs.map { it.route }
 
     // Shared ViewModels — survive navigation
@@ -46,37 +68,22 @@ fun AppNavigation(
     val settingsVm: SettingsViewModel = viewModel()
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             if (showBottomBar) {
-                NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
-                    bottomTabs.forEach { tab ->
-                        val selected = navBackStack?.destination
-                            ?.hierarchy?.any { it.route == tab.route } == true
-                        NavigationBarItem(
-                            selected = selected,
-                            onClick  = {
-                                navController.navigate(tab.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState    = true
-                                }
-                            },
-                            icon  = { Text(tab.icon, fontSize = 20.sp) },
-                            label = {
-                                Text(tab.label, fontSize = 10.sp,
-                                    fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal)
-                            },
-                            colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor   = MaterialTheme.colorScheme.primary,
-                                selectedTextColor   = MaterialTheme.colorScheme.primary,
-                                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                indicatorColor      = MaterialTheme.colorScheme.primaryContainer
-                            )
-                        )
+                CosmosBottomNav(
+                    tabs          = bottomTabs,
+                    navBackStack  = navBackStack,
+                    onTabSelected = { route ->
+                        navController.navigate(route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState    = true
+                        }
                     }
-                }
+                )
             }
         }
     ) { innerPadding ->
@@ -85,17 +92,21 @@ fun AppNavigation(
             startDestination = startDestination,
             modifier         = Modifier.padding(innerPadding),
             enterTransition  = {
-                fadeIn(tween(220)) + slideInHorizontally(tween(220)) { it / 8 }
+                fadeIn(tween(260, easing = FastOutSlowInEasing)) +
+                        slideInHorizontally(tween(260, easing = FastOutSlowInEasing)) { it / 10 }
             },
-            exitTransition   = { fadeOut(tween(180)) },
-            popEnterTransition  = {
-                fadeIn(tween(220)) + slideInHorizontally(tween(220)) { -it / 8 }
+            exitTransition   = {
+                fadeOut(tween(200, easing = FastOutSlowInEasing))
             },
-            popExitTransition   = {
-                fadeOut(tween(180)) + slideOutHorizontally(tween(220)) { it / 8 }
+            popEnterTransition = {
+                fadeIn(tween(260, easing = FastOutSlowInEasing)) +
+                        slideInHorizontally(tween(260, easing = FastOutSlowInEasing)) { -it / 10 }
+            },
+            popExitTransition = {
+                fadeOut(tween(200, easing = FastOutSlowInEasing)) +
+                        slideOutHorizontally(tween(260, easing = FastOutSlowInEasing)) { it / 10 }
             }
         ) {
-            // Splash
             composable(NavRoutes.SPLASH) {
                 SplashScreen(onFinished = {
                     navController.navigate(NavRoutes.HOME) {
@@ -103,33 +114,21 @@ fun AppNavigation(
                     }
                 })
             }
-
-            // Home
             composable(NavRoutes.HOME) {
                 HomeScreen(onNavigate = { route -> navController.navigate(route) })
             }
-
-            // APOD
             composable(NavRoutes.APOD) {
                 ApodScreen(onBack = { navController.popBackStack() }, favVm = favVm)
             }
-
-            // Mars
             composable(NavRoutes.MARS) {
                 MarsScreen(onBack = { navController.popBackStack() }, favVm = favVm)
             }
-
-            // NEO
             composable(NavRoutes.NEO) {
                 NeoScreen(onBack = { navController.popBackStack() })
             }
-
-            // Favorites
             composable(NavRoutes.FAVORITES) {
                 FavoritesScreen(onBack = { navController.popBackStack() }, favVm = favVm)
             }
-
-            // Settings (accessed from Home header & its own route)
             composable(NavRoutes.SETTINGS) {
                 SettingsScreen(
                     onBack        = { navController.popBackStack() },
@@ -137,8 +136,6 @@ fun AppNavigation(
                     onThemeChange = onThemeChange
                 )
             }
-
-            // Planets list
             composable(NavRoutes.PLANETS) {
                 PlanetsScreen(
                     onBack        = { navController.popBackStack() },
@@ -147,8 +144,6 @@ fun AppNavigation(
                     }
                 )
             }
-
-            // Planet detail (with 3D planet)
             composable(
                 route     = NavRoutes.PLANET_DETAIL,
                 arguments = listOf(navArgument("planetName") { type = NavType.StringType })
@@ -160,5 +155,92 @@ fun AppNavigation(
                 )
             }
         }
+    }
+}
+
+// ── Bottom Navigation Bar ──────────────────────────────────────────────────────
+@Composable
+private fun CosmosBottomNav(
+    tabs: List<BottomTab>,
+    navBackStack: androidx.navigation.NavBackStackEntry?,
+    onTabSelected: (String) -> Unit
+) {
+    Surface(
+        color           = MaterialTheme.colorScheme.surface,
+        tonalElevation  = Dimens.elevationSm,
+        shadowElevation = Dimens.elevationSm
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(Dimens.bottomNavHeight)
+                .navigationBarsPadding()
+                .padding(horizontal = Dimens.spaceSm),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            tabs.forEach { tab ->
+                val selected = navBackStack?.destination
+                    ?.hierarchy?.any { it.route == tab.route } == true
+                CosmosNavItem(
+                    tab      = tab,
+                    selected = selected,
+                    onClick  = { onTabSelected(tab.route) },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun CosmosNavItem(
+    tab: BottomTab,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val activeColor   = MaterialTheme.colorScheme.primary
+    val inactiveColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.65f)
+    val iconColor     = if (selected) activeColor else inactiveColor
+    val icon          = if (selected) tab.iconFilled else tab.iconOutlined
+    val indicatorBg   = MaterialTheme.colorScheme.primaryContainer
+
+    Column(
+        modifier = modifier
+            .height(Dimens.bottomNavHeight)
+            .clip(RoundedCornerShape(Dimens.radiusMd))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication        = null,
+                onClick           = onClick
+            ),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        // Pill indicator
+        Box(
+            modifier = Modifier
+                .width(56.dp)
+                .height(32.dp)
+                .clip(RoundedCornerShape(Dimens.radiusFull))
+                .background(if (selected) indicatorBg else Color.Transparent),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector        = icon,
+                contentDescription = tab.labelRes,
+                tint               = iconColor,
+                modifier           = Modifier.size(Dimens.iconMd)
+            )
+        }
+        Spacer(Modifier.height(Dimens.spaceXxs))
+        Text(
+            text       = tab.labelRes,
+            fontSize   = 10.sp,
+            fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+            color      = iconColor,
+            maxLines   = 1
+        )
     }
 }

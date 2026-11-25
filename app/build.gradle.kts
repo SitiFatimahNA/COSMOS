@@ -90,6 +90,9 @@ dependencies {
     // Compose animations (already in BOM, explicit for clarity)
     implementation("androidx.compose.animation:animation")
 
+    // Material Icons Extended (vector icons for nav, actions)
+    implementation("androidx.compose.material:material-icons-extended")
+
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 
