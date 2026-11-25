@@ -62,4 +62,10 @@
     <string name="neptune_name">Neptune</string>
 
     <string name="language">Language</string>
+
+    <string name="million">million</string>
+    <string name="earth_days">Earth days</string>
+    <string name="earth_years">Earth years</string>
+    <string name="hours">hours</string>
+    <string name="days">days</string>
 </resources>

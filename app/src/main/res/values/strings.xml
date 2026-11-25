@@ -75,4 +75,10 @@
     <string name="neptune_name">Neptunus</string>
 
     <string name="language">Bahasa</string>
+
+    <string name="million">juta</string>
+    <string name="earth_days">hari Bumi</string>
+    <string name="earth_years">tahun Bumi</string>
+    <string name="hours">jam</string>
+    <string name="days">hari</string>
 </resources>

@@ -23,6 +23,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
+import androidx.compose.foundation.Image
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 
 
 val SpaceBackground = Color(0xFFF5F6FA)
@@ -67,7 +70,7 @@ class MainActivity : AppCompatActivity() {
 
 data class Planet(
     val name: String,
-    val emoji: String,
+    val imageRes: Int,
     val description: String,
     val color: Color,
     val distance: String = "-",
@@ -193,62 +196,92 @@ fun CosmosApp(
 fun getPlanets(): List<Planet> {
     return listOf(
         Planet(
-            stringResource(R.string.mercury_name),
-            "🌑",
-            stringResource(R.string.mercury_description),
-            Color(0xFF777C91),
-            "57.9 million km", "4,879 km",
-            "58.6 Earth days", "88 Earth days",
-            stringResource(R.string.mercury_fact)
+            name = stringResource(R.string.mercury_name),
+            imageRes = R.drawable.planet_mercury,
+            description = stringResource(R.string.mercury_description),
+            color = Color(0xFF777C91),
+            distance = "57.9 ${stringResource(R.string.million)} km",
+            diameter = "4,879 km",
+            rotation = "58.6 ${stringResource(R.string.earth_days)}",
+            revolution = "88 ${stringResource(R.string.earth_days)}",
+            fact = stringResource(R.string.mercury_fact)
         ),
         Planet(
-            stringResource(R.string.venus_name), "🟠", stringResource(R.string.venus_description),
-            Color(0xFFD58B55),
-            "108.2 million km", "12,104 km",
-            "243 Earth days", "225 Earth days",
-            stringResource(R.string.venus_fact)
+            name = stringResource(R.string.venus_name),
+            imageRes = R.drawable.planet_venus,
+            description = stringResource(R.string.venus_description),
+            color = Color(0xFFD58B55),
+            distance = "108.2 ${stringResource(R.string.million)} km",
+            diameter = "12,104 km",
+            rotation = "243 ${stringResource(R.string.earth_days)}",
+            revolution = "225 ${stringResource(R.string.earth_days)}",
+            fact = stringResource(R.string.venus_fact)
         ),
         Planet(
-            stringResource(R.string.earth_name), "🌍", stringResource(R.string.earth_description),
-            Color(0xFF348FE0),
-            "149.6 million km", "12,742 km",
-            "24 hours", "365.25 days",
-            stringResource(R.string.earth_fact)
+            name = stringResource(R.string.earth_name),
+            imageRes = R.drawable.planet_earth,
+            description = stringResource(R.string.earth_description),
+            color = Color(0xFF348FE0),
+            distance = "149.6 ${stringResource(R.string.million)} km",
+            diameter = "12,742 km",
+            rotation = "24 ${stringResource(R.string.hours)}",
+            revolution = "365.25 ${stringResource(R.string.days)}",
+            fact = stringResource(R.string.earth_fact)
         ),
         Planet(
-            stringResource(R.string.mars_name), "🔴", stringResource(R.string.mars_description),
-            Color(0xFFD65B50),
-            "227.9 million km", "6,779 km",
-            "24.6 hours", "687 Earth days",
-            stringResource(R.string.mars_fact)
+            name = stringResource(R.string.mars_name),
+            imageRes = R.drawable.planet_mars,
+            description = stringResource(R.string.mars_description),
+            color = Color(0xFFD65B50),
+            distance = "227.9 million km",
+            diameter = "6,779 km",
+            rotation = "24.6 ${stringResource(R.string.hours)}",
+            revolution = "687 ${stringResource(R.string.earth_days)}",
+            fact = stringResource(R.string.mars_fact)
         ),
         Planet(
-            name = stringResource(R.string.jupiter_name), "🪐", stringResource(R.string.jupiter_description),
-            Color(0xFFC58A64),
-            "778.6 million km", "139,820 km",
-            "9.9 hours", "11.86 Earth years",
-            stringResource(R.string.jupiter_fact)
+            name = stringResource(R.string.jupiter_name),
+            imageRes = R.drawable.planet_jupiter,
+            description = stringResource(R.string.jupiter_description),
+            color = Color(0xFFC58A64),
+            distance = "778.5 ${stringResource(R.string.million)} km",
+            diameter = "139,820 km",
+            rotation = "9.9 ${stringResource(R.string.hours)}",
+            revolution = "11.86 ${stringResource(R.string.earth_years)}",
+            fact = stringResource(R.string.jupiter_fact)
         ),
         Planet(
-            stringResource(R.string.saturn_name), "🪐", stringResource(R.string.saturn_description),
-            Color(0xFFD9B56D),
-            "1.43 billion km", "116,460 km",
-            "10.7 hours", "29.4 Earth years",
-            stringResource(R.string.saturn_fact)
+            name = stringResource(R.string.saturn_name),
+            imageRes = R.drawable.planet_saturn,
+            description = stringResource(R.string.saturn_description),
+            color = Color(0xFFD9B56D),
+            distance = "1,434 ${stringResource(R.string.million)} km",
+            diameter = "116,460 km",
+            rotation = "10.7 ${stringResource(R.string.hours)}",
+            revolution = "29.45 ${stringResource(R.string.earth_years)}",
+            fact = stringResource(R.string.saturn_fact)
         ),
         Planet(
-            stringResource(R.string.uranus_name), "🔵", stringResource(R.string.uranus_description),
-            Color(0xFF65C9D6),
-            "2.87 billion km", "50,724 km",
-            "17.2 hours", "84 Earth years",
-            stringResource(R.string.uranus_fact)
+            name = stringResource(R.string.uranus_name),
+            imageRes = R.drawable.planet_uranus,
+            description = stringResource(R.string.uranus_description),
+            color = Color(0xFF65C9D6),
+            distance = "2,871 ${stringResource(R.string.million)} km",
+            diameter = "50,724 km",
+            rotation = "17.2 ${stringResource(R.string.hours)}",
+            revolution = "84 ${stringResource(R.string.earth_years)}",
+            fact = stringResource(R.string.uranus_fact)
         ),
         Planet(
-            stringResource(R.string.neptune_name), "🔵", stringResource(R.string.neptune_description),
-            Color(0xFF4668DB),
-            "4.50 billion km", "49,244 km",
-            "16.1 hours", "165 Earth years",
-            stringResource(R.string.neptune_fact)
+            name = stringResource(R.string.neptune_name),
+            imageRes = R.drawable.planet_neptune,
+            description = stringResource(R.string.neptune_description),
+            color = Color(0xFF4668DB),
+            distance = "4,495 ${stringResource(R.string.million)} km",
+            diameter = "49,244 km",
+            rotation = "16.1 ${stringResource(R.string.hours)}",
+            revolution = "164.8 ${stringResource(R.string.earth_years)}",
+            fact = stringResource(R.string.neptune_fact)
         )
     )
 }
@@ -456,9 +489,11 @@ fun PlanetCard(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = planet.emoji,
-                    fontSize = 48.sp
+                Image(
+                    painter = painterResource(id = planet.imageRes),
+                    contentDescription = planet.name,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
                 )
             }
 
