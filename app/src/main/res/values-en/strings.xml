@@ -58,8 +58,16 @@
     <string name="back_to_explore">← Back</string>
     <string name="retry">Retry</string>
     <string name="loading">Loading…</string>
+    <string name="see_all">See All</string>
+    <string name="explore_btn">Explore</string>
     <string name="error_no_internet">No internet connection.</string>
     <string name="error_timeout">Connection timed out. Check your internet.</string>
+
+    <!-- Category subtitles -->
+    <string name="apod_category_sub">Today\'s Photo</string>
+    <string name="mars_category_sub">Rovers &amp; Photos</string>
+    <string name="neo_category_sub">Near-Earth Asteroids</string>
+    <string name="favs_category_sub">Saved Collection</string>
 
     <!-- Legacy planet strings -->
     <string name="explore">Explore</string>
@@ -69,6 +77,7 @@
     <string name="beyond_stars">Beyond the Stars</string>
     <string name="hero_description">Explore the mysteries of our universe.</string>
     <string name="nasa_gallery">NASA Space Gallery</string>
+    <string name="nasa_gallery_sub">Featured images from NASA archives</string>
     <string name="loading_gallery">Loading space gallery…</string>
     <string name="gallery_unavailable">Gallery unavailable.</string>
     <string name="gallery_empty">No images available yet.</string>
