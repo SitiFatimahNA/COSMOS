@@ -96,6 +96,7 @@
     <string name="rotation">Rotasi</string>
     <string name="revolution">Revolusi</string>
     <string name="did_you_know">✦ Tahukah Kamu?</string>
+    <string name="planet_3d_hint">Seret planet untuk memutar cahaya</string>
     <string name="mercury_name">Merkurius</string>
     <string name="venus_name">Venus</string>
     <string name="earth_name">Bumi</string>

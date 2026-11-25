@@ -96,6 +96,7 @@
     <string name="rotation">Rotation</string>
     <string name="revolution">Revolution</string>
     <string name="did_you_know">✦ Did You Know?</string>
+    <string name="planet_3d_hint">Drag planet to rotate the light</string>
     <string name="mercury_name">Mercury</string>
     <string name="venus_name">Venus</string>
     <string name="earth_name">Earth</string>
