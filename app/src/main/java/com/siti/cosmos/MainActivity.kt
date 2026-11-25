@@ -23,9 +23,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
-import androidx.compose.foundation.Image
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 
 
 val SpaceBackground = Color(0xFFF5F6FA)
@@ -489,8 +490,11 @@ fun PlanetCard(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(id = planet.imageRes),
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(planet.imageRes)
+                        .crossfade(true)
+                        .build(),
                     contentDescription = planet.name,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
