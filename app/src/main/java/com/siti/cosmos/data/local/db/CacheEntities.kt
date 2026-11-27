@@ -9,9 +9,10 @@ import androidx.room.PrimaryKey
  * If the network fails, stale cache is still shown with an indicator.
  */
 object CacheTtl {
-    const val APOD_MS  = 12 * 60 * 60 * 1000L   // 12 hours  (APOD updates daily)
-    const val MARS_MS  =  6 * 60 * 60 * 1000L   //  6 hours
-    const val NEO_MS   =  6 * 60 * 60 * 1000L   //  6 hours
+    const val APOD_MS    = 12 * 60 * 60 * 1000L   // 12 hours  (APOD updates daily)
+    const val MARS_MS    =  6 * 60 * 60 * 1000L   //  6 hours
+    const val NEO_MS     =  6 * 60 * 60 * 1000L   //  6 hours
+    const val GALLERY_MS =  6 * 60 * 60 * 1000L   //  6 hours
 }
 
 /** APOD cache row — keyed by date string (e.g. "2024-11-25") */
@@ -69,9 +70,24 @@ data class NeoCacheEntity(
     val cachedAt: Long = System.currentTimeMillis()
 )
 
+/** NASA Gallery cache row — keyed by query + item id + order */
+@Entity(tableName = "gallery_cache")
+data class GalleryCacheEntity(
+    @PrimaryKey val cacheKey: String,
+    val query: String,
+    val id: String,
+    val nasaId: String,
+    val title: String,
+    val description: String,
+    val dateCreated: String,
+    val imageUrl: String,
+    val sortOrder: Int,
+    val cachedAt: Long = System.currentTimeMillis()
+)
+
 /** Rate-limit tracker — prevents hammering NASA when 429 is received */
 @Entity(tableName = "rate_limit")
 data class RateLimitEntity(
-    @PrimaryKey val endpoint: String,   // "apod" | "mars" | "neo"
+    @PrimaryKey val endpoint: String,   // "apod" | "mars" | "neo" | "gallery"
     val blockedUntilMs: Long            // epoch ms when we can retry
 )

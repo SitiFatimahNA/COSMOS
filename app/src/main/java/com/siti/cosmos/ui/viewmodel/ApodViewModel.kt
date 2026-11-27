@@ -35,13 +35,21 @@ class ApodViewModel(app: Application) : AndroidViewModel(app) {
     init { loadApod() }
 
     fun loadApod(date: String? = null) {
-        // ── Deduplication: skip if same date already loaded and not an error ──
         val dateKey = date ?: "today"
+
+        // Jangan mengirim request baru jika tanggal yang sama
+        // masih sedang dimuat.
+        if (dateKey == lastLoadedDate && _state.value.isLoading) {
+            return
+        }
+
+        // Jangan memuat ulang data yang sudah berhasil dimuat.
         if (dateKey == lastLoadedDate &&
-            !_state.value.isLoading &&
             _state.value.apod != null &&
             _state.value.error == null
-        ) return
+        ) {
+            return
+        }
 
         currentJob?.cancel()
         currentJob = viewModelScope.launch {

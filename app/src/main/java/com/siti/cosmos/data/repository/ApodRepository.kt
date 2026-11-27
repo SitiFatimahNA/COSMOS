@@ -13,6 +13,7 @@ import com.siti.cosmos.data.remote.RetrofitClient
 import com.siti.cosmos.data.remote.withRetry
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import kotlinx.coroutines.CancellationException
 
 class ApodRepository(context: Context) {
     private val api    = RetrofitClient.nasaApi
@@ -89,8 +90,8 @@ class ApodRepository(context: Context) {
             } else {
                 ApiResult.Error("Connection timed out. Check your internet.")
             }
-        } catch (e: Exception) {
-            ApiResult.Error("Unexpected error: ${e.localizedMessage}")
+        } catch (e: CancellationException) {
+            throw e
         }
     }
 }

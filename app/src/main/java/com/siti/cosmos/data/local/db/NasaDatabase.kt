@@ -6,14 +6,21 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities  = [ApodCacheEntity::class, MarsCacheEntity::class, NeoCacheEntity::class, RateLimitEntity::class],
-    version   = 1,
+    entities  = [
+        ApodCacheEntity::class,
+        MarsCacheEntity::class,
+        NeoCacheEntity::class,
+        GalleryCacheEntity::class,
+        RateLimitEntity::class
+    ],
+    version   = 2,
     exportSchema = false
 )
 abstract class NasaDatabase : RoomDatabase() {
     abstract fun apodDao(): ApodCacheDao
     abstract fun marsDao(): MarsCacheDao
     abstract fun neoDao(): NeoCacheDao
+    abstract fun galleryDao(): GalleryCacheDao
     abstract fun rateLimitDao(): RateLimitDao
 
     companion object {

@@ -74,3 +74,18 @@ interface RateLimitDao {
     @Query("DELETE FROM rate_limit WHERE blockedUntilMs < :nowMs")
     suspend fun clearExpired(nowMs: Long)
 }
+
+@Dao
+interface GalleryCacheDao {
+    @Query("SELECT * FROM gallery_cache WHERE query = :query ORDER BY sortOrder ASC")
+    suspend fun getByQuery(query: String): List<GalleryCacheEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(entities: List<GalleryCacheEntity>)
+
+    @Query("DELETE FROM gallery_cache WHERE query = :query")
+    suspend fun deleteByQuery(query: String)
+
+    @Query("DELETE FROM gallery_cache WHERE cachedAt < :olderThanMs")
+    suspend fun evictOld(olderThanMs: Long)
+}

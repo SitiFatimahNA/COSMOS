@@ -218,7 +218,7 @@ private fun PlanetGridCard(planet: PlanetInfo, onClick: () -> Unit) {
                 .padding(horizontal = Dimens.spaceSm, vertical = Dimens.spaceXxs + 1.dp)
         ) {
             Text(
-                text  = planet.type.split(" ").first(),   // "Terrestrial" / "Gas" / "Ice"
+                text = stringResource(planet.typeRes),   // "Terrestrial" / "Gas" / "Ice"
                 style = MaterialTheme.typography.labelSmall,
                 color = White
             )
@@ -239,7 +239,7 @@ private fun PlanetGridCard(planet: PlanetInfo, onClick: () -> Unit) {
             )
             Spacer(Modifier.height(Dimens.spaceXxs))
             Text(
-                text     = planet.description,
+                text = stringResource(planet.descriptionRes),
                 style    = MaterialTheme.typography.labelSmall,
                 color    = White70,
                 maxLines = 1,

@@ -164,4 +164,127 @@
     <string name="earth_years">tahun Bumi</string>
     <string name="hours">jam</string>
     <string name="days">hari</string>
+
+    <!-- Updated 2-feature Navigation & Splash -->
+    <string name="nav_gallery">Galeri NASA</string>
+    <string name="nav_label_planets">Planet</string>
+    <string name="nav_label_gallery">Galeri NASA</string>
+    <string name="splash_tagline">Jelajahi Alam Semesta</string>
+    <string name="splash_powered_by">Didukung oleh NASA Open APIs</string>
+
+    <!-- Common / Settings / Cache localization -->
+    <string name="fav_add">Tambah ke favorit</string>
+    <string name="fav_remove">Hapus dari favorit</string>
+    <string name="neo_hazardous_badge">Berbahaya</string>
+    <string name="api_key_demo">DEMO_KEY (terbatas)</string>
+    <string name="api_key_custom">Kunci kustom ✓</string>
+    <string name="cache_updated_days">Diperbarui %1$d hari lalu</string>
+    <string name="cache_updated_hours">Diperbarui %1$d jam lalu</string>
+    <string name="cache_updated_minutes">Diperbarui %1$d menit lalu</string>
+    <string name="cache_updated_just_now">Baru saja diperbarui</string>
+    <string name="cache_saved_data">Menampilkan data tersimpan</string>
+
+    <!-- Planets (complete ID localization) -->
+    <string name="planets_subtitle">8 planet Tata Surya</string>
+    <string name="planet_type_terrestrial">Planet Terestrial</string>
+    <string name="planet_type_gas_giant">Raksasa Gas</string>
+    <string name="planet_type_ice_giant">Raksasa Es</string>
+    <string name="planet_type_short_terrestrial">Terestrial</string>
+    <string name="planet_type_short_gas">Gas</string>
+    <string name="planet_type_short_ice">Es</string>
+    <string name="planet_moons_label">Satelit Alami</string>
+    <string name="planet_temp_label">Suhu Permukaan</string>
+
+    <string name="planet_mercury_desc">Merkurius adalah planet terkecil di Tata Surya sekaligus yang paling dekat dengan Matahari. Permukaannya dipenuhi kawah tumbukan dan hampir tidak memiliki atmosfer untuk menahan panas.</string>
+    <string name="planet_mercury_distance">57,9 juta km</string>
+    <string name="planet_mercury_diameter">4.879 km</string>
+    <string name="planet_mercury_rotation">58,6 hari Bumi</string>
+    <string name="planet_mercury_revolution">88 hari Bumi</string>
+    <string name="planet_mercury_moons">0 satelit</string>
+    <string name="planet_mercury_temp">-180 °C hingga 430 °C</string>
+    <string name="planet_mercury_fact">Karena tidak memiliki atmosfer tebal, suhu Merkurius berubah drastis antara siang dan malam, dan satu hari matahari di Merkurius setara dengan 176 hari Bumi.</string>
+
+    <string name="planet_venus_desc">Venus adalah planet terpanas di Tata Surya meskipun bukan yang terdekat dengan Matahari. Atmosfer karbon dioksidanya yang sangat tebal menimbulkan efek rumah kaca ekstrem.</string>
+    <string name="planet_venus_distance">108,2 juta km</string>
+    <string name="planet_venus_diameter">12.104 km</string>
+    <string name="planet_venus_rotation">243 hari Bumi</string>
+    <string name="planet_venus_revolution">225 hari Bumi</string>
+    <string name="planet_venus_moons">0 satelit</string>
+    <string name="planet_venus_temp">465 °C</string>
+    <string name="planet_venus_fact">Venus berotasi berlawanan arah dengan sebagian besar planet lain, sehingga Matahari terbit dari barat dan terbenam di timur, serta satu harinya lebih lama dari satu tahunnya.</string>
+
+    <string name="planet_earth_desc">Bumi adalah planet ketiga dari Matahari dan satu-satunya dunia yang diketahui mendukung kehidupan. Sekitar 71% permukaannya tertutup air cair dengan atmosfer pelindung yang kaya nitrogen dan oksigen.</string>
+    <string name="planet_earth_distance">149,6 juta km</string>
+    <string name="planet_earth_diameter">12.742 km</string>
+    <string name="planet_earth_rotation">23,9 jam</string>
+    <string name="planet_earth_revolution">365,25 hari</string>
+    <string name="planet_earth_moons">1 satelit (Bulan)</string>
+    <string name="planet_earth_temp">15 °C (rata-rata)</string>
+    <string name="planet_earth_fact">Bumi merupakan planet terpadat di Tata Surya dan memiliki medan magnet kuat yang melindungi kehidupan dari radiasi angin Matahari.</string>
+
+    <string name="planet_mars_desc">Mars dikenal sebagai Planet Merah karena kandungan oksida besi pada permukaannya. Planet ini memiliki lembah ngarai raksasa, tudung es kutub, serta gunung berapi terbesar di Tata Surya.</string>
+    <string name="planet_mars_distance">227,9 juta km</string>
+    <string name="planet_mars_diameter">6.779 km</string>
+    <string name="planet_mars_rotation">24,6 jam</string>
+    <string name="planet_mars_revolution">687 hari Bumi</string>
+    <string name="planet_mars_moons">2 satelit (Phobos &amp; Deimos)</string>
+    <string name="planet_mars_temp">-65 °C (rata-rata)</string>
+    <string name="planet_mars_fact">Gunung Olympus Mons di Mars menjulang setinggi sekitar 21,9 km, hampir tiga kali lipat tinggi Gunung Everest di Bumi.</string>
+
+    <string name="planet_jupiter_desc">Jupiter adalah planet terbesar di Tata Surya yang tersusun terutama dari gas hidrogen dan helium. Ciri khasnya adalah Bintik Merah Raksasa, badai anticyclone raksasa yang telah berlangsung ratusan tahun.</string>
+    <string name="planet_jupiter_distance">778,5 juta km</string>
+    <string name="planet_jupiter_diameter">139.820 km</string>
+    <string name="planet_jupiter_rotation">9,9 jam</string>
+    <string name="planet_jupiter_revolution">11,86 tahun Bumi</string>
+    <string name="planet_jupiter_moons">95 satelit</string>
+    <string name="planet_jupiter_temp">-110 °C</string>
+    <string name="planet_jupiter_fact">Jupiter memiliki rotasi tercepat di antara semua planet Tata Surya, dan satelitnya Ganymede lebih besar daripada planet Merkurius.</string>
+
+    <string name="planet_saturn_desc">Saturnus adalah raksasa gas kedua terbesar yang terkenal dengan sistem cincinnya yang luas dan berkilau. Cincin tersebut terdiri atas miliaran partikel es, debu, dan pecahan batu.</string>
+    <string name="planet_saturn_distance">1.434 juta km</string>
+    <string name="planet_saturn_diameter">116.460 km</string>
+    <string name="planet_saturn_rotation">10,7 jam</string>
+    <string name="planet_saturn_revolution">29,45 tahun Bumi</string>
+    <string name="planet_saturn_moons">146 satelit</string>
+    <string name="planet_saturn_temp">-140 °C</string>
+    <string name="planet_saturn_fact">Massa jenis rata-rata Saturnus lebih kecil daripada air, dan kutub utaranya memiliki pola badai berbentuk segi enam raksasa yang unik.</string>
+
+    <string name="planet_uranus_desc">Uranus adalah raksasa es berwarna biru kehijauan akibat kandungan gas metana di atmosfernya. Planet ini berotasi miring ekstrem hampir sejajar dengan bidang orbitnya.</string>
+    <string name="planet_uranus_distance">2.871 juta km</string>
+    <string name="planet_uranus_diameter">50.724 km</string>
+    <string name="planet_uranus_rotation">17,2 jam</string>
+    <string name="planet_uranus_revolution">84 tahun Bumi</string>
+    <string name="planet_uranus_moons">28 satelit</string>
+    <string name="planet_uranus_temp">-195 °C</string>
+    <string name="planet_uranus_fact">Uranus merupakan planet pertama yang ditemukan menggunakan teleskop pada tahun 1781 oleh William Herschel, dengan kemiringan sumbu sekitar 98 derajat.</string>
+
+    <string name="planet_neptune_desc">Neptunus adalah planet terjauh dari Matahari yang berwarna biru pekat. Raksasa es ini dikenal memiliki angin supersonik terkuat di seluruh Tata Surya.</string>
+    <string name="planet_neptune_distance">4.495 juta km</string>
+    <string name="planet_neptune_diameter">49.244 km</string>
+    <string name="planet_neptune_rotation">16,1 jam</string>
+    <string name="planet_neptune_revolution">164,8 tahun Bumi</string>
+    <string name="planet_neptune_moons">16 satelit</string>
+    <string name="planet_neptune_temp">-200 °C</string>
+    <string name="planet_neptune_fact">Kecepatan angin di atmosfer Neptunus dapat melampaui 2.100 km/jam, dan satelit terbesarnya Triton mengorbit berlawanan arah dengan rotasi planet.</string>
+
+    <!-- NASA Gallery & Detail (ID) -->
+    <string name="gallery_title">Galeri NASA</string>
+    <string name="gallery_subtitle">Koleksi foto astronomi resmi dari arsip NASA</string>
+    <string name="gallery_search_hint">Cari foto astronomi…</string>
+    <string name="gallery_detail_title">Detail Galeri</string>
+    <string name="gallery_article_title">Penjelasan Astronomi</string>
+    <string name="gallery_date_label">Tanggal</string>
+    <string name="gallery_nasa_id_label">ID NASA</string>
+    <string name="gallery_no_description">Penjelasan astronomi terperinci untuk gambar ini belum tersedia di arsip NASA. Gambar ini berasal dari koleksi resmi NASA Image and Video Library.</string>
+    <string name="gallery_date_unknown">Tanggal tidak tersedia</string>
+    <string name="gallery_untitled">Gambar Antariksa NASA</string>
+    <string name="gallery_error_rate_limit">Batas permintaan API tercapai. Coba lagi dalam %1$d detik.</string>
+    <string name="gallery_error_server">Server NASA sedang bermasalah (%1$d). Silakan coba lagi nanti.</string>
+    <string name="gallery_error_generic">Gagal mengambil gambar NASA. Silakan coba lagi.</string>
+    <string name="gallery_topic_nebula">Nebula</string>
+    <string name="gallery_topic_galaxy">Galaksi</string>
+    <string name="gallery_topic_planets">Planet</string>
+    <string name="gallery_topic_moon">Bulan</string>
+    <string name="gallery_topic_sun">Matahari</string>
+    <string name="gallery_topic_hubble">Hubble</string>
 </resources>

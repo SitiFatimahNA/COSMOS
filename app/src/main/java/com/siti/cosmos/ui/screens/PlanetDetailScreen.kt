@@ -106,10 +106,10 @@ fun PlanetDetailScreen(
                     )
                 ) {
                     Text(
-                        text          = planet.nameEn,
-                        style         = MaterialTheme.typography.displaySmall,
-                        color         = MaterialTheme.colorScheme.onBackground,
-                        fontWeight    = FontWeight.Black
+                        text = stringResource(planet.nameRes),
+                        style = MaterialTheme.typography.displaySmall,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.Black
                     )
                     Spacer(Modifier.height(Dimens.spaceXs))
                     Row(
@@ -124,7 +124,7 @@ fun PlanetDetailScreen(
                                 .padding(horizontal = Dimens.spaceMd, vertical = Dimens.spaceXxs + 2.dp)
                         ) {
                             Text(
-                                text  = planet.type,
+                                text = stringResource(planet.typeRes),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = colors3d.base,
                                 fontWeight = FontWeight.SemiBold
@@ -137,7 +137,7 @@ fun PlanetDetailScreen(
             // ── Description ────────────────────────────────────────────────────
             item {
                 Text(
-                    text   = planet.description,
+                    text = stringResource(planet.descriptionRes),
                     style  = MaterialTheme.typography.bodyMedium,
                     color  = MaterialTheme.colorScheme.onSurfaceVariant,
                     lineHeight = 24.sp,
@@ -161,10 +161,26 @@ fun PlanetDetailScreen(
                 Spacer(Modifier.height(Dimens.spaceMd))
 
                 val stats = listOf(
-                    StatItem(Icons.Outlined.SocialDistance, stringResource(R.string.distance_from_sun), planet.distance),
-                    StatItem(Icons.Outlined.Circle,         stringResource(R.string.diameter),           planet.diameter),
-                    StatItem(Icons.Outlined.Refresh,        stringResource(R.string.rotation),           planet.rotation),
-                    StatItem(Icons.Outlined.PublishedWithChanges, stringResource(R.string.revolution),   planet.revolution),
+                    StatItem(
+                        Icons.Outlined.SocialDistance,
+                        stringResource(R.string.distance_from_sun),
+                        stringResource(planet.distanceRes)
+                    ),
+                    StatItem(
+                        Icons.Outlined.Circle,
+                        stringResource(R.string.diameter),
+                        stringResource(planet.diameterRes)
+                    ),
+                    StatItem(
+                        Icons.Outlined.Refresh,
+                        stringResource(R.string.rotation),
+                        stringResource(planet.rotationRes)
+                    ),
+                    StatItem(
+                        Icons.Outlined.PublishedWithChanges,
+                        stringResource(R.string.revolution),
+                        stringResource(planet.revolutionRes)
+                    )
                 )
 
                 // 2×2 grid using two rows
@@ -197,9 +213,11 @@ fun PlanetDetailScreen(
             item {
                 Spacer(Modifier.height(Dimens.spaceXl))
                 FunFactCard(
-                    fact    = planet.fact,
-                    accent  = colors3d.base,
-                    modifier = Modifier.padding(horizontal = Dimens.screenPadding)
+                    fact = stringResource(planet.factRes),
+                    accent = colors3d.base,
+                    modifier = Modifier.padding(
+                        horizontal = Dimens.screenPadding
+                    )
                 )
             }
         }

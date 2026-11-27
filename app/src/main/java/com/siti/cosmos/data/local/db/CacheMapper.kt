@@ -97,3 +97,26 @@ fun NeoCacheEntity.toModel(): NeoObject = NeoObject(
         )
     )
 )
+
+// ── NASA Gallery ──────────────────────────────────────────────────────────────
+
+fun GalleryItem.toEntity(query: String, sortOrder: Int): GalleryCacheEntity = GalleryCacheEntity(
+    cacheKey    = "$query::$id::$sortOrder",
+    query       = query,
+    id          = id,
+    nasaId      = nasaId,
+    title       = title,
+    description = description,
+    dateCreated = dateCreated,
+    imageUrl    = imageUrl,
+    sortOrder   = sortOrder
+)
+
+fun GalleryCacheEntity.toGalleryItem(): GalleryItem = GalleryItem(
+    id          = id,
+    nasaId      = nasaId,
+    title       = title,
+    description = description,
+    dateCreated = dateCreated,
+    imageUrl    = imageUrl
+)

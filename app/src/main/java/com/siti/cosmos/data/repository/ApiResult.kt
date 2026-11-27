@@ -36,3 +36,18 @@ fun Long.toCacheLabel(): String {
         else        -> "Updated just now"
     }
 }
+
+@androidx.compose.runtime.Composable
+fun Long.toLocalizedCacheLabel(): String {
+    if (this == 0L) return ""
+    val diffMs  = (System.currentTimeMillis() - this).coerceAtLeast(0L)
+    val minutes = diffMs / 60_000
+    val hours   = minutes / 60
+    val days    = hours   / 24
+    return when {
+        days    > 0 -> androidx.compose.ui.res.stringResource(com.siti.cosmos.R.string.cache_updated_days, days)
+        hours   > 0 -> androidx.compose.ui.res.stringResource(com.siti.cosmos.R.string.cache_updated_hours, hours)
+        minutes > 0 -> androidx.compose.ui.res.stringResource(com.siti.cosmos.R.string.cache_updated_minutes, minutes)
+        else        -> androidx.compose.ui.res.stringResource(com.siti.cosmos.R.string.cache_updated_just_now)
+    }
+}

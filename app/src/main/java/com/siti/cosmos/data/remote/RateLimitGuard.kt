@@ -4,11 +4,15 @@ import com.siti.cosmos.data.local.db.NasaDatabase
 import com.siti.cosmos.data.local.db.RateLimitEntity
 import kotlinx.coroutines.delay
 import retrofit2.HttpException
-
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
+import kotlinx.coroutines.CancellationException
 object Endpoints {
-    const val APOD = "apod"
-    const val MARS = "mars"
-    const val NEO  = "neo"
+    const val APOD    = "apod"
+    const val MARS    = "mars"
+    const val NEO     = "neo"
+    const val GALLERY = "gallery"
 }
 
 /**
@@ -48,17 +52,28 @@ suspend fun <T> withRetry(
             // Success — clear any residual rate limit for this endpoint
             rateLimitDao.clear(endpoint)
             return result
-        } catch (e: HttpException) {
+
+        }  catch (e: CancellationException) {
+            throw e
+        }
+
+
+        catch (e: HttpException) {
+
             when (e.code()) {
                 429 -> {
                     // Parse Retry-After header (seconds) if present, default 60 s
-                    val retryAfterSec = e.response()
-                        ?.headers()
-                        ?.get("Retry-After")
-                        ?.toLongOrNull() ?: 60L
-                    val blockedUntilMs = System.currentTimeMillis() + retryAfterSec * 1000L
+                    val retryAfterSec = parseRetryAfter(
+                        e.response()?.headers()?.get("Retry-After")
+                    )
 
-                    rateLimitDao.upsert(RateLimitEntity(endpoint, blockedUntilMs))
+                    val blockedUntilMs =
+                        System.currentTimeMillis() + retryAfterSec * 1000L
+
+                    rateLimitDao.upsert(
+                        RateLimitEntity(endpoint, blockedUntilMs)
+                    )
+
                     throw RateLimitedException(retryAfterSec * 1000L)
                 }
                 in 500..599 -> {
@@ -76,5 +91,30 @@ suspend fun <T> withRetry(
         } catch (e: java.net.UnknownHostException) {
             throw e   // No internet — not retryable here
         }
+    }
+}
+
+private fun parseRetryAfter(value: String?): Long {
+    if (value.isNullOrBlank()) return 60L
+
+    val seconds = value.trim().toLongOrNull()
+
+    if (seconds != null) {
+        return seconds.coerceIn(1L, 3600L)
+    }
+
+    return try {
+        val retryDate = ZonedDateTime.parse(
+            value,
+            DateTimeFormatter.RFC_1123_DATE_TIME
+        )
+
+        val remainingMs =
+            retryDate.toInstant().toEpochMilli() -
+                    System.currentTimeMillis()
+
+        (remainingMs / 1000L).coerceIn(1L, 3600L)
+    } catch (e: DateTimeParseException) {
+        60L
     }
 }
